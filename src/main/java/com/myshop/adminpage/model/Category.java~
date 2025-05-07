@@ -1,0 +1,123 @@
+package com.myshop.adminpage.model;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
+import jdk.jfr.Timestamp;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.*;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+public class Category {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column(length = 100, nullable = false, unique = true)
+    private String name;
+
+    @Column(length = 200)
+    private String photoUrl;
+
+    @Column(length = 200)
+    private String slug;
+
+    private boolean active;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "parent_id")
+    private Category parent;
+
+    @OneToMany(mappedBy = "parent",fetch = FetchType.LAZY)
+    @OrderBy(value = "name asc")
+    private Set<Category> subCategories = new LinkedHashSet<>();
+
+    @Column(length = 200)
+    private String allParentCategoryIds;
+
+    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+
+    @Transient
+    @Getter
+    @Setter
+    private boolean hasChildren;
+
+    @Transient
+    @Getter
+    @Setter
+    private boolean hasBrand;
+
+    //    @Transient
+//    @PrePersist
+//    @PreUpdate
+//    public void updateAllParentCategoryIDs() {
+//        if(parent != null) {
+//            this.allParentCategoryIds = parent.getAllParentCategoryIds() + "," + parent.getId();
+//        } else {
+//            this.allParentCategoryIds = String.valueOf(this.id);
+//        }
+//    }
+
+    //    @Transient
+    public void addSubCategory(Category subCategory) {
+        subCategories.add(subCategory);
+        subCategory.setParent(this);
+    }
+
+    //    @Transient
+    public void removeSubCategory(Category subCategory) {
+        subCategories.remove(subCategory);
+        subCategory.setParent(null);
+    }
+
+    public void clearSubCategories() {
+        for (Category subCategory : subCategories) {
+            subCategory.setSubCategories(null);
+        }
+        subCategories.clear();
+    }
+
+//    public List<Category> getSubCategories() {
+//        return new ArrayList<>(subCategories);
+//    }
+
+    public static Category shallowCopy(Category category) {
+        Category copyCategory = new Category();
+        copyCategory.setId(category.getId());
+        copyCategory.setName(category.getName());
+        copyCategory.setPhotoUrl(category.getPhotoUrl());
+        copyCategory.setSlug(category.getSlug());
+        copyCategory.setActive(category.isActive());
+        copyCategory.setParent(category.getParent());
+        copyCategory.setSubCategories(category.getSubCategories());
+//        copyCategory.setAllParentCategoryIds(category.getAllParentCategoryIds());
+        copyCategory.setHasChildren(!category.getSubCategories().isEmpty());
+        copyCategory.setCreatedAt(category.getCreatedAt());
+        copyCategory.setUpdatedAt(category.getUpdatedAt());
+        return copyCategory;
+    }
+
+    public static Category deepCopy(Category category, String name) {
+        Category copyCategory = shallowCopy(category);
+        copyCategory.setName(name);
+        return copyCategory;
+    }
+
+}

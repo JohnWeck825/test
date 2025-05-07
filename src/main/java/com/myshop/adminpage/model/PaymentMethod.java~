@@ -1,0 +1,4 @@
+package com.myshop.admin.model;
+
+public enum PaymentMethod {
+}

@@ -1,0 +1,30 @@
+package com.myshop.adminpage.repository;
+
+import com.myshop.adminpage.model.Series;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.*;
+
+@Repository
+public interface SeriesRepository extends JpaRepository<Series, Integer> {
+    @Query("SELECT s FROM Series s WHERE concat(s.id, ' ', s.name) LIKE %?1%")
+    Page<Series> searchByName(String keyword, Pageable pageable);
+
+    Series findByName(String name);
+
+    @Query("UPDATE Series s SET s.active = :status WHERE s.id = :id")
+    @Modifying
+    @Transactional
+    void updateStatus(@Param("id") Integer id, @Param("status") boolean status);
+
+    @Query("SELECT s FROM Series s " +
+            " join Brand b on s.brand.id = b.id " +
+            "WHERE b.id = :brandId")
+    List<Series> findByBrandId(Integer brandId);
+}

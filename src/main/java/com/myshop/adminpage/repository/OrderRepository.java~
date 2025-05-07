@@ -1,0 +1,4 @@
+package com.myshop.admin.repository;
+
+public interface OrderRepository {
+}

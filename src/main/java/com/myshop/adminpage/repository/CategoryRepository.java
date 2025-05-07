@@ -1,0 +1,64 @@
+package com.myshop.adminpage.repository;
+
+import com.myshop.adminpage.model.Brand;
+import com.myshop.adminpage.model.Category;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
+
+    Category findByName(String name);
+
+    @Query("SELECT c FROM Category c WHERE c.slug = :slug")
+    Category findBySlug(@Param("slug") String slug);
+
+    @Query("SELECT c FROM Category c")
+    List<Category> getAllCategories();
+
+    @Query("SELECT c FROM Category c WHERE c.name LIKE %?1%")
+    List<Category> searchByName(String keyword);
+
+    @Query("SELECT c FROM Category c WHERE concat(c.id, ' ', c.name, ' ', c.slug) LIKE %?1% AND c.parent is null")
+    Page<Category> searchByName(String keyword, Pageable pageable);
+
+    @Query("SELECT c FROM Category c WHERE concat(c.id, ' ', c.name, ' ', c.slug) LIKE %?1%")
+    List<Category> searchByNameHierarchical(String keyword, Pageable pageable);
+
+    @Query("UPDATE Category c SET c.active = :status WHERE c.id = :id")
+    @Modifying
+    @Transactional
+    void updateStatus(@Param("id") Integer id, @Param("status") boolean status);
+
+    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.subCategories WHERE c.parent is null ORDER BY c.id")
+    List<Category> findAllRootCategories();
+
+    @Query("SELECT c FROM Category c ORDER BY c.id")
+    List<Category> searchCategoriesByKeyword(String keyword);
+
+    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.subCategories WHERE c.name LIKE %?1% AND c.parent is null ORDER BY c.id")
+    List<Category> findAllRootCategoriesByKeyword(String keyword);
+
+    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.subCategories WHERE c.parent is null ORDER BY c.id")
+    Page<Category> findAllRootCategories(Pageable pageable);
+
+    @Query("SELECT b from Brand b join b.categories c where c.id = :id")
+    List<Brand> findAllBrandsByCategoryId(@Param("id") Integer id);
+
+    @Query("select c from Category c where c.parent.id = :id")
+    Set<Category> findAllSubCategories(@Param("id") Integer id);
+
+    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.subCategories WHERE c.id = :id")
+    Optional<Category> findByIdWithSubCategories(@Param("id") Integer id);
+
+    Long countByParentId(Integer parentId);
+
+}

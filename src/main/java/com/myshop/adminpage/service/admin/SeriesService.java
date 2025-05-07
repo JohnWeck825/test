@@ -1,0 +1,106 @@
+package com.myshop.adminpage.service.admin;
+
+import com.myshop.adminpage.exception.BrandNotFoundException;
+import com.myshop.adminpage.model.Brand;
+import com.myshop.adminpage.model.Series;
+import com.myshop.adminpage.repository.SeriesRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+@Service
+public class SeriesService {
+    private static final int SERIES_PER_PAGE = 5;
+    @Autowired
+    private SeriesRepository seriesRepository;
+    @Autowired
+    private BrandService brandService;
+
+    public Series save(Series series) {
+        return seriesRepository.save(series);
+    }
+
+    public Optional<Series> findById(Integer id) {
+        return seriesRepository.findById(id);
+    }
+
+    public Page<Series> listByPage(String keyword, Integer pageNum, String sortField, String sortDir) {
+        Pageable pageable = PageRequest.of(pageNum - 1, SERIES_PER_PAGE, Sort.Direction.fromString(sortDir), sortField);
+        if (keyword != null && !keyword.isEmpty()) {
+            return seriesRepository.searchByName(keyword, pageable);
+        }
+        return seriesRepository.findAll(pageable);
+    }
+
+    public void deleteSeries(Integer id) {
+        seriesRepository.deleteById(id);
+    }
+
+    public void updateStatus(Integer id, boolean status) {
+        getSeriesById(id);
+        seriesRepository.updateStatus(id, status);
+    }
+
+    public List<Series> findAll() {
+        return seriesRepository.findAll();
+    }
+
+
+    public Series getSeriesById(Integer id) throws BrandNotFoundException {
+        return seriesRepository.findById(id)
+                .orElseThrow(() -> new BrandNotFoundException("Couldn't find any series with id =" + id));
+    }
+
+    public String handlerExceptionAddSeries(Integer id, String name, String slug) {
+        Series seriesName = seriesRepository.findByName(name);
+        Series seriesSlug = seriesRepository.findByName(slug);
+
+//        Series brandId = seriesRepository.findById(id).orElse(null);
+        if (seriesName == null && seriesSlug == null) {
+            return "OK";
+        }
+        boolean isCreating = (id == null);
+        if (isCreating) { //true
+            if (seriesName != null) {
+                return "Series name exists";
+            } else if (seriesSlug != null) {
+                return "Series slug exists";
+            }
+        } else { // false
+            if (seriesName != null && seriesName.getId() != id) {
+                return "Series name exists";
+            } else if (seriesSlug != null && seriesSlug.getId() != id) {
+                return "Series slug exists";
+            }
+        }
+
+        return "OK";
+    }
+
+    public String handlerExceptionAddBrand2(Integer id, String name) {
+        Series seriesName = seriesRepository.findByName(name);
+
+//        Series brandId = seriesRepository.findById(id).orElse(null);
+        if (seriesName == null) {
+            return "OK";
+        }
+        boolean isCreating = (id == null);
+        if (isCreating) { //true
+            if (seriesName != null) {
+                return "Series name exists";
+            }
+        } else { // false
+            if (seriesName != null && seriesName.getId() != id) {
+                return "Series name exists";
+            }
+        }
+
+        return "OK";
+    }
+
+    public List<Series> findSeriesByBrandId(Integer brandId) {
+        return seriesRepository.findByBrandId(brandId);
+    }
+}

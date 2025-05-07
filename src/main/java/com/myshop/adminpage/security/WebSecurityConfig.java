@@ -1,0 +1,120 @@
+package com.myshop.adminpage.security;
+
+import com.myshop.adminpage.service.admin.CustomUserDetailService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.CommonConfig;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+
+import java.io.IOException;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig {
+    //    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+    @Bean
+    BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+//
+//    //    @Override
+
+    @Autowired
+    private CustomUserDetailService customUserDetailService;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+//                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((authorize) -> authorize
+//                        .requestMatchers("/user/**").hasAuthority("Admin")
+//                        .requestMatchers(HttpMethod.POST, "/category/**", "/product/**", "/brand/**").hasAnyAuthority("Admin", "Editor")
+//                        .requestMatchers(HttpMethod.PUT, "/category/**", "/product/**", "/brand/**").hasAnyAuthority("Admin", "Editor")
+//                        .requestMatchers(HttpMethod.DELETE, "/category/**", "/product/**", "/brand/**").hasAnyAuthority("Admin", "Editor")
+//                        .requestMatchers(HttpMethod.GET, "/category/**", "/product/**", "/brand/**").permitAll()
+//                        .requestMatchers("/admin/**", "admin-category/**", "admin-product/**", "admin-brand/**", "admin-series/**", "admin-user/**").hasAuthority("Admin")
+                        .requestMatchers("/admin/**", "/admin-category", "/admin-product", "/admin-brand", "/admin-series", "/admin-user").hasAnyAuthority("Admin", "Editor1")
+//                        .requestMatchers(HttpMethod.POST, "/admin-category/update").hasAnyAuthority("Admin", "Editor")
+//                        .requestMatchers("/admin/**", "admin-category/", "admin-product/", "admin-brand/", "admin-series/", "admin-user/").hasAnyAuthority("Admin", "Editor1")
+//                        .requestMatchers(HttpMethod.GET, "/admin-category/createCategory").hasAuthority("Editor1")
+//                        .requestMatchers("/admin/**").permitAll()
+                        .requestMatchers("/*").permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(login -> login
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/admin", true)
+                        .failureUrl("/login?error")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .deleteCookies("JSESSIONID", "remember-me", "XSRF-TOKEN")
+                        .invalidateHttpSession(true)
+                        .permitAll())
+                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers("/logout"))
+                .rememberMe(rememberMe -> rememberMe
+                        .tokenValiditySeconds(7 * 24 * 60 * 60) // 86400
+                        .key("uniqueAndSecret"));
+//                .rememberMe(rememberMe -> rememberMe
+//                        .tokenValiditySeconds(86400)
+//                        .key("abcxyzgiday"));
+//                .sessionManagement(session -> session
+//                        .maximumSessions(1)
+////                        .maxSessionsPreventsLogin(true)
+//                        .expiredUrl("/login?expired"));
+        return http.build();
+    }
+
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(customUserDetailService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        return daoAuthenticationProvider;
+    }
+
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authenticationProvider());
+    }
+
+    @Bean
+    WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers("/static/**", "/assets/**", "/assets-of-atlantis/**",
+                "/assets-of-client/**", "/css/**", "/js/**", "/images/**",
+                "/fontawesome-free-6.6.0-web/**", "/bootstrap-5.3.3-dist/**");
+    }
+
+
+}
+
+//.defaultSuccessUrl("/admin/", true):
+//Định nghĩa URL chuyển hướng sau khi người dùng đăng nhập thành công.
+//true ở đây cho phép luôn chuyển hướng đến /admin/, ngay cả khi người dùng truy cập vào một trang khác trước khi đăng nhập.
+//Nếu bạn đặt false, người dùng sẽ được chuyển hướng về trang mà họ đã cố gắng truy cập trước khi đăng nhập.
+//.permitAll():
+//Cho phép tất cả mọi người (bao gồm cả người dùng chưa xác thực) truy cập vào trang đăng nhập (/login) và URL xử lý đăng nhập (/login).

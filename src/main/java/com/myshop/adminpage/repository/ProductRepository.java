@@ -1,0 +1,40 @@
+package com.myshop.adminpage.repository;
+
+import com.myshop.adminpage.model.Category;
+import com.myshop.adminpage.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+public interface ProductRepository extends JpaRepository<Product, Integer> {
+
+    @Query("UPDATE Product p SET p.active = :status WHERE p.id = :id")
+    @Modifying
+    @Transactional
+    void updateStatus(@Param("id") Integer id, @Param("status") boolean status);
+
+    Product findByName(String name);
+
+    @Query("SELECT p FROM Product p WHERE p.slug = :slug")
+    Product findBySlug(@Param("slug") String slug);
+
+//    @Query("SELECT p FROM Product p join fetch p.category join fetch p.brand join fetch p.series WHERE concat(p.name, ' ', p.slug, ' ', p.descriptionTitle, ' ', p.brand.name, ' ', p.category.name, ' ', p.series.name, ' ') LIKE %?1%")
+//    Page<Product> searchByName(String keyword, Pageable pageable);
+
+    @Query("SELECT p FROM Product p WHERE concat(p.name, ' ', p.slug, ' ', p.descriptionTitle, ' ', p.brand.name, ' ', p.category.name, ' ', p.series.name, ' ') LIKE %?1%")
+    Page<Product> searchByName(String keyword, Pageable pageable);
+
+    @Query("SELECT p FROM Product p WHERE concat(p.name, ' ', p.category.name, ' ', p.series.name, ' ') LIKE %?1%")
+    Page<Product> findAllByKeyword(String keyword, Pageable pageable);
+
+//    @Query("SELECT p FROM Product p join fetch p.category WHERE concat(p.name, ' ', p.slug, ' ', p.descriptionTitle, ' ', p.category.name, ' ') LIKE %?1%")
+//    Page<Product> searchByName(String keyword, Pageable pageable);
+
+
+}

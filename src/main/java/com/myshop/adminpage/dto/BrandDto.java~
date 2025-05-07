@@ -1,0 +1,4 @@
+package com.myshop.adminpage.dto;
+
+public class BrandDto {
+}

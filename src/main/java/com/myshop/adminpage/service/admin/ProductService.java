@@ -1,0 +1,99 @@
+package com.myshop.adminpage.service.admin;
+
+import com.myshop.adminpage.exception.ProductNotFoundException;
+import com.myshop.adminpage.model.Category;
+import com.myshop.adminpage.model.Product;
+import com.myshop.adminpage.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+//@Transactional
+public class ProductService {
+
+    public static final int PRODUCT_PER_PAGE = 5;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    public List<Product> findAll() {
+        return productRepository.findAll();
+    }
+
+    @Transactional()
+    public Page<Product> listByPage(String keyword, Integer pageNum, String sortField, String sortDir) {
+        Pageable pageable = PageRequest.of(pageNum - 1, PRODUCT_PER_PAGE, sortDir.equals("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending());
+        if (keyword != null && !keyword.isEmpty()) {
+            System.out.println(productRepository.findAllByKeyword(keyword, pageable));
+            return productRepository.findAllByKeyword(keyword, pageable);
+        }
+        return productRepository.findAll(pageable);
+    }
+
+    public Product save(Product product) {
+        if (product.getSlug() == null || product.getSlug().isEmpty()) {
+            product.setSlug(product.getName().replaceAll(" ", "--"));
+        } else {
+            product.setSlug(product.getSlug().replaceAll(" ", "--"));
+        }
+        return productRepository.save(product);
+    }
+
+    public Product getProductById(Integer id) throws ProductNotFoundException {
+        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Couldn't find product with id: " + id));
+    }
+
+    public void updateStatus(Integer id, boolean status) {
+        getProductById(id);
+        productRepository.updateStatus(id, status);
+    }
+
+    public void delete(Integer id) {
+        getProductById(id);
+        productRepository.deleteById(id);
+    }
+
+    public Product savePrice(Product productInForm) {
+        Product productInDB = getProductById(productInForm.getId());
+        productInDB.setPrice(productInForm.getPrice());
+        productInDB.setListPrice(productInForm.getListPrice());
+        productInDB.setDiscount(productInForm.getDiscount());
+
+        return productRepository.save(productInDB);
+    }
+
+    public String handlerExceptionInProductForm(Integer id, String name, String slug) {
+        Product productName = productRepository.findByName(name);
+        Product productSlug = productRepository.findBySlug(slug);
+//        Product productId = productRepository.findById(id).orElse(null);
+        if (productName == null && productSlug == null) {
+            return "OK";
+        }
+        boolean isCreating = (id == null);
+
+        if (isCreating) { //true
+            if (productName != null) {
+                return "Product name exists";
+            } else if (productSlug != null) {
+                return "Product slug exists";
+            }
+        } else { // false
+            if (productName != null && productName.getId() != id) {
+                return "Product name exists";
+            } else if (productSlug != null && productSlug.getId() != id) {
+                return "Product slug exists";
+            }
+        }
+
+        return "OK";
+    }
+
+
+}

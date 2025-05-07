@@ -1,0 +1,122 @@
+package com.myshop.adminpage.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.Iterator;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "product")
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(length = 100, nullable = false, unique = true)
+    private String name;
+
+    @Column(length = 200)
+    private Float price;
+
+    @Column(length = 500, nullable = true)
+    private Float listPrice;
+
+    @Column(length = 200)
+    private String mainImageUrl;
+
+    @Column(length = 200)
+    private String descriptionTitle;
+
+    @Column(columnDefinition = "TEXT")
+    private String descriptionContent;
+
+    @Column(length = 200, unique = true, nullable = true)
+    private String slug;
+
+    private boolean active;
+    private boolean inStock;
+    //    private Integer quantity;
+//    @Column(nullable = true)
+//    private Integer inventory;
+
+    private Double discount;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
+
+    private LocalDateTime createdDate;
+    private LocalDateTime updatedDate;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.Set<ProductImage> images = new java.util.LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.Set<ProductDetail> attributes = new java.util.LinkedHashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "series_id")
+    private Series series;
+
+//    @PreUpdate: Được gọi trước khi Entity được cập nhật.
+//
+//    @PostPersist: Được gọi sau khi Entity được lưu trữ.
+//
+//    @PostUpdate: Được gọi sau khi Entity được cập nhật.
+//
+//    @PostLoad: Được gọi sau khi Entity được tải từ cơ sở dữ liệu.
+
+    @PrePersist
+    public void onCreate() {
+        createdDate = LocalDateTime.now();
+        updatedDate = createdDate;
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        updatedDate = LocalDateTime.now();
+    }
+
+    @Transient
+    public String getShortName() {
+        if (name.length() > 50) {
+            return name.substring(0, 50).concat("...");
+        }
+        return name;
+    }
+
+    public void addExtraImage(String name, Product product) {
+        images.add(new ProductImage(name, this));
+    }
+
+    public void addDetail(String name, String value, Product product) {
+        attributes.add(new ProductDetail(name, value, this));
+    }
+
+    public void addDetail(Integer id, String name, String value, Product product) {
+        attributes.add(new ProductDetail(id, name, value, this));
+    }
+
+    public boolean containImageName(String fileName) {
+        Iterator<ProductImage> iterator = images.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getName().equals(fileName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+}

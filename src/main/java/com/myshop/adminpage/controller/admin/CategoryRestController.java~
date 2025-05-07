@@ -1,0 +1,52 @@
+package com.myshop.adminpage.controller.admin;
+
+import com.myshop.adminpage.Interface.CategoryServiceInf;
+import com.myshop.adminpage.dto.CategoryDto;
+import com.myshop.adminpage.model.Category;
+import com.myshop.adminpage.service.admin.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/admin-category")
+public class CategoryRestController {
+    @Autowired
+    private CategoryServiceInf categoryServiceInf;
+
+//    @PostMapping("/check-name-and-slug-in-add-form")
+//    public String checkNameAndSlugInAdd(@RequestParam(value = "id", required = false) Integer id, @RequestParam("name") String name, @RequestParam("slug") String slug) {
+//        return categoryServiceInf.handlerExceptionAddCategory(id, name, slug);
+//    }
+
+    @PostMapping("/check-name-and-slug-in-add-form")
+    public ResponseEntity<String> checkNameAndSlugInAdd(@RequestBody CategoryDto categoryDto) {
+        try {
+            String result = categoryServiceInf.handlerExceptionAddCategory(categoryDto.getId(), categoryDto.getName(), categoryDto.getSlug());
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+//    @PostMapping("/check-name-and-slug-in-add-form")
+//    public String checkNameAndSlug(@RequestParam("name") String name, @RequestParam("slug") String slug) {
+//        return categoryServiceInf.handlerExceptionAddCategory(name, slug);
+//    }
+
+
+//    @PostMapping("editCategory{id}/check-name-and-slug")
+//    public String checkNameAndSlugInEdit(@PathVariable Integer id, @RequestParam("name") String name, @RequestParam("slug") String slug) {
+//        return categoryServiceInf.handlerExceptionAddCategory(id, name, slug);
+//    }
+
+    @PostMapping("editCategory{id}/check-name-and-slug")
+    public ResponseEntity<String> checkNameAndSlugInEdit(@PathVariable Integer id, @RequestBody CategoryDto categoryDto) {
+        String result = categoryServiceInf.handlerExceptionAddCategory(id, categoryDto.getName(), categoryDto.getSlug());
+        return ResponseEntity.ok().body(result);
+    }
+
+
+}

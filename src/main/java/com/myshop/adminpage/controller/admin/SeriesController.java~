@@ -1,0 +1,99 @@
+package com.myshop.adminpage.controller.admin;
+
+import com.myshop.adminpage.exception.SeriesNotFoundException;
+import com.myshop.adminpage.model.Brand;
+import com.myshop.adminpage.model.Series;
+import com.myshop.adminpage.service.admin.BrandService;
+import com.myshop.adminpage.service.admin.SeriesService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.*;
+
+@Controller
+@RequestMapping("/admin-series")
+public class SeriesController {
+    @Autowired
+    private SeriesService seriesService;
+    @Autowired
+    private BrandService brandService;
+
+    @GetMapping("")
+    public String index(Model model, @Param("keyword") String keyword, @RequestParam(name = "pageNum", defaultValue = "1") Integer pageNum
+            , @RequestParam(name = "orderBy", defaultValue = "id") String sortField, @RequestParam(name = "direction", defaultValue = "asc") String sortDir) {
+        Page<Series> seriesList = seriesService.listByPage(keyword, pageNum, sortField, sortDir);
+//        List<Series> seriesList = page.getContent();
+
+        String defaultUrl = "/admin-series";
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", seriesList.getTotalPages());
+        model.addAttribute("totalItems", seriesList.getTotalElements());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+        model.addAttribute("seriesList", seriesList);
+        model.addAttribute("defaultUrl", defaultUrl);
+        return "/admin/series/index";
+    }
+
+    @PostMapping("/save")
+    public String save(@ModelAttribute Series series, RedirectAttributes redirectAttributes) {
+        seriesService.save(series);
+        redirectAttributes.addFlashAttribute("message", "The series has been created successfully.");
+        return "redirect:/admin-series";
+    }
+
+    @GetMapping("createSeries")
+    public String createSeries(Model model) {
+        List<Brand> brands = brandService.findAll();
+        model.addAttribute("brands", brands);
+        model.addAttribute("series", new Series());
+        return "/admin/series/add";
+    }
+
+    @GetMapping("/editSeries{id}")
+    public String editSeries(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Optional<Series> series = seriesService.findById(id);
+            List<Brand> seriesBrand = brandService.findAll();
+            if (series.isPresent()) {
+                model.addAttribute("series", series.get());
+                model.addAttribute("seriesBrand", seriesBrand);
+                return "/admin/series/edit";
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return "redirect:/admin-series";
+        }
+        return "redirect:/admin-series";
+    }
+
+    @GetMapping("/deleteSeries/{id}")
+    public String deleteSeries(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        Optional<Series> series = seriesService.findById(id);
+        if (series.isPresent()) {
+            seriesService.deleteSeries(id);
+            redirectAttributes.addFlashAttribute("message", "The series has been deleted successfully.");
+        } else {
+            throw new SeriesNotFoundException("Series not found");
+        }
+        return "redirect:/admin-series";
+    }
+
+    @GetMapping("/updateStatus{id}/{status}")
+    public String updateStatus(@PathVariable Integer id, @PathVariable boolean status) {
+        try {
+            seriesService.updateStatus(id, status);
+        } catch (SeriesNotFoundException e) {
+            return "redirect:/admin-series";
+        }
+        return "redirect:/admin-series";
+    }
+
+}
