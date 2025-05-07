@@ -1,0 +1,90 @@
+<div th:fragment="content" class="container mt-3" xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+    <!--    Start 1-->
+    <!--    <div id="productDetailsContainer">-->
+    <!--        <div class="product-detail-input mb-3">-->
+    <!--            <input type="hidden" name="detailIds" value="">-->
+    <!--            <label for="detailName">Details</label>-->
+    <!--            <input type="text" name="detailNames" class="form-control mb-1" placeholder="Detail Name" id="detailName">-->
+    <!--            <label for="detailValue">Values</label>-->
+    <!--            <input type="text" name="detailValues" class="form-control" placeholder="Detail Value" id="detailValue">-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--    <div class="" style="margin-bottom: 10px;">-->
+    <!--        <button type="button" class="btn btn-secondary mt-2" id="addDetailButton">+ Add Detail</button>-->
+    <!--    </div>-->
+
+    <!--    <script>-->
+    <!--        document.getElementById('addDetailButton').addEventListener('click', function () {-->
+    <!--            const container = document.getElementById('productDetailsContainer');-->
+    <!--            const newDetailInput = document.createElement('div');-->
+    <!--            newDetailInput.className = 'product-detail-input mb-3';-->
+    <!--            newDetailInput.innerHTML = `-->
+    <!--            <input type="hidden" name="detailIds" value="">-->
+    <!--            <input type="text" name="detailNames" class="form-control mb-1" placeholder="Detail Name">-->
+    <!--            <input type="text" name="detailValues" class="form-control" placeholder="Detail Value">-->
+    <!--        `;-->
+    <!--            container.appendChild(newDetailInput);-->
+    <!--        });-->
+    <!--    </script>-->
+    <!--    End 1-->
+
+    <!--    Start 2-->
+    <!-- details_section.html -->
+    <div class="container mt-3" id="details-section">
+        <h5>Product Details</h5>
+
+        <div class="row g-3" th:each="detail, stat : ${product.attributes}">
+            <div class="col-md-5">
+                <label for="detailName" class="form-label">Detail Name</label>
+                <input type="text" id="detailName" name="detailNames" class="form-control" th:field="*{attributes[stat.index].name}"
+                       placeholder="e.g., Size, Color">
+            </div>
+
+            <div class="col-md-5">
+                <label for="detailValue" class="form-label">Detail Value</label>
+                <input type="text" id="detailValue" name="detailValues" class="form-control" th:field="*{attributes[stat.index].value}"
+                       placeholder="e.g., Large, Red">
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-sm ml-1" onclick="removeDetail(this)">Remove</button>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="button" class="btn btn-success" id="addDetailButton">Add Detail</button>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to dynamically add new product details
+        const detailContainer = document.getElementById('details-section');
+        const addDetailButton = document.getElementById('addDetailButton');
+
+        addDetailButton.addEventListener('click', function () {
+            const newRow = document.createElement('div');
+            newRow.className = 'row g-3 mt-2';
+
+            newRow.innerHTML = `
+            <div class="col-md-5">
+                <input type="text" class="form-control" name="detailNames" placeholder="e.g., Size, Color">
+            </div>
+            <div class="col-md-5">
+                <input type="text" class="form-control" name="detailValues" placeholder="e.g., Large, Red">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-sm ml-1" onclick="removeDetail(this)">Remove</button>
+            </div>`;
+
+            detailContainer.insertBefore(newRow, addDetailButton.parentElement);
+        });
+
+        function removeDetail(button) {
+            button.closest('.row').remove();
+        }
+    </script>
+    <!--    End 2-->
+
+</div>

@@ -1,0 +1,96 @@
+<div th:fragment="modal_notify" class="modal fade" id="modal-notify" xmlns:th="http://www.thymeleaf.org">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-danger"></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-black">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="modal_option" class="modal fade" id="modal-yes-no" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" xmlns:th="http://www.thymeleaf.org">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-close-modal" data-dismiss='modal'>Close</button>
+                <a href="" id="btn-confirm" class="btn btn-primary">OK</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="modal_confirm_delete" class="modal fade" id="modal-confirm-delete" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" xmlns:th="http://www.thymeleaf.org">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ModalLabel"></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <a href="" id="btn-confirm-delete" class="btn btn-primary">OK</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Error -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+     aria-hidden="true" xmlns:th="http://www.thymeleaf.org" th:fragment="modal_error">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" aria-label="close" class="close" id="modalCloseBtn" data-dismiss="modal"
+                        style="position: absolute; right: 10px; top: 5px; z-index: 1033;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span id="errorMessage"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="modalCloseBtnFooter" data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"-->
+<!--     aria-hidden="true">-->
+<!--    <div class="modal-dialog">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h5 class="modal-title" id="errorModalLabel">Error</h5>-->
+<!--                <button type="button" aria-label="close" class="close" id="modalCloseBtn" data-dismiss="modal"-->
+<!--                        style="position: absolute; right: 10px; top: 5px; z-index: 1033;">-->
+<!--                    <span aria-hidden="true">&times;</span>-->
+<!--                </button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <span id="errorMessage"></span>-->
+<!--            </div>-->
+<!--            <div class="modal-footer">-->
+<!--                <button type="button" class="btn btn-danger" id="modalCloseBtnFooter" data-dismiss="modal">Close-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->

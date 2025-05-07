@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/fragments/layout-without-pagination}">
+<head th:replace="admin/fragments/head :: head('Brand management')">
+    <style>
+        .img_thumb-container {
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .img-thumb {
+            object-fit: cover;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-preview-container {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .image-preview-container:hover {
+            transform: scale(1.05);
+        }
+
+        .object-fit-cover {
+            object-fit: cover;
+        }
+
+    </style>
+</head>
+<body data-background-color="dark">
+
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card rounded shadow">
+                    <div class="card-header bg-primary text-white rounded-top">
+                        <h4 class="card-title mb-0">Edit Category</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form th:action="@{/admin-brand/save}" th:object="${brand}"
+                              method="post" enctype="multipart/form-data"
+                              id="editBrandForm">
+                            <input type="hidden" th:field="*{id}">
+
+                            <!-- Name -->
+                            <div class="mb-3">
+                                <label for="Name" class="form-label">Name</label>
+                                <input id="Name" type="text" class="form-control"
+                                       placeholder="Enter brand name" th:field="*{name}">
+                            </div>
+
+
+                            <!-- Status -->
+                            <div class="mb-3">
+                                <label class="form-label d-block mb-2">Status</label>
+                                <div class="btn-group w-100" role="group" aria-label="Status selection">
+                                    <input class="btn-check" type="radio" autocomplete="off"
+                                           th:field="*{active}" value="1" id="statusEnable">
+                                    <label class="form-check-label" for="statusEnable">Enable</label>
+
+                                    <input class="btn btn-outline-danger" type="radio" autocomplete="off"
+                                           th:field="*{active}" value="0" id="statusDisable">
+                                    <label class="form-check-label" for="statusDisable">Disable</label>
+                                </div>
+                            </div>
+
+                            <!-- Brand Category -->
+                            <div class="mb-3">
+                                <label class="form-label">Brand Category</label>
+                                <!--                                <label>-->
+                                <select th:field="*{categories}" class="form-control" multiple="multiple">
+                                    <option value="">Parent Category</option>
+                                    <option th:each="brandCategory : ${brandCategories}"
+                                            th:value="${brandCategory.id}"
+                                            th:text="${brandCategory.name}"
+                                            th:selected="${brand.categories.contains(brandCategory)}"></option>
+                                </select>
+                                <!--                                </label>-->
+                            </div>
+
+                            <!-- Image Upload -->
+                            <div class="mb-3">
+                                <input th:field="*{logo}" type="hidden">
+                                <label for="imageFile" class="form-label">Brand Logo</label>
+                                <input type="file" class="form-control" id="imageFile" name="imageFile">
+                            </div>
+
+                            <!-- Display Uploaded Image -->
+                            <div class="mb-3 text-center">
+                                <div class="img_thumb-container rounded border p-2">
+                                    <img th:src="${brand.logo}" alt="Category Image"
+                                         class="img-thumb img-fluid rounded" style="max-height: 150px;">
+                                </div>
+                            </div>
+
+                            <!--                            <div class="mb-3 text-center">-->
+                            <!--                                <div class="img_thumb-container p-2 border border-3 rounded-3 shadow-lg d-inline-block"-->
+                            <!--                                     style="border-color: #ddd; max-width: 100%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">-->
+                            <!--                                    <img th:src="${brand.logo}" alt="Category Image"-->
+                            <!--                                         class="img-thumb img-fluid rounded-3"-->
+                            <!--                                         style="max-height: 150px; max-width: 100%; border: 5px solid #fff;">-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+
+                            <!--                            <div class="mb-4">-->
+                            <!--                                <label class="form-label d-block mb-2">Brand Logo Preview</label>-->
+                            <!--                                <div class="image-preview-container mx-auto" style="max-width: 200px;">-->
+                            <!--                                    <div class="ratio ratio-1x1 rounded-circle overflow-hidden border border-3 border-primary shadow-lg">-->
+                            <!--                                        <div class="d-flex rounded align-items-center justify-content-center bg-light p-2">-->
+                            <!--                                            <img th:src="${brand.logo}" alt="Category Image"-->
+                            <!--                                                 class="img-fluid object-fit-cover rounded"-->
+                            <!--                                                 style="min-height: 100%; min-width: 100%;">-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+
+                            <div class="mb-3 d-flex justify-content-between">
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-success me-2">Update</button>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="button" class="btn btn-link btn-primary btn-lg btn-sm"
+                                            data-toggle="tooltip" title="Go Back">
+                                        <a th:href="@{/admin-brand}" class="btn text-white btn-primary"
+                                           style="text-decoration: none">Back</a>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Notify -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                    <button type="button" aria-hidden="true" class="close" data-dismiss="modal"
+                            style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span id="errorMessage"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+
+    <script>
+        $(document).ready(function () {
+            const form = $("#editBrandForm"); // Đảm bảo chỉ lấy đúng form edit
+
+            form.on("submit", function (event) {
+                event.preventDefault(); // Ngăn chặn gửi form mặc định
+
+                // Lấy giá trị của name, slug và id
+                const name = $("input[name='name']").val();
+                const brandId = $("input[name='id']").val();
+
+                // Gửi yêu cầu AJAX để kiểm tra tên và slug
+                $.ajax({
+                    url: `/admin-brand/editCategory${brandId}/check-name-edit-form`,
+                    type: "POST",
+                    data: {name: name},
+                    success: function (response) {
+                        if (response !== "OK") {
+                            // Nếu có lỗi, hiển thị modal thông báo
+                            $("#errorMessage").text(response);
+                            $("#errorModal").modal("show");
+                        } else {
+                            // Nếu không có lỗi, gửi form bình thường
+                            form.off("submit"); // Bỏ sự kiện chặn submit
+                            form.submit(); // Gửi form
+                        }
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra trong quá trình kiểm tra. Vui lòng thử lại.");
+                    }
+                });
+            });
+        });
+    </script>
+
+
+</div>
+</body>
+</html>

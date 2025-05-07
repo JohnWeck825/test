@@ -1,0 +1,320 @@
+<div th:fragment="content" class="container mt-3" xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+    <!--    // 1-->
+    <!--    <div class="form-group">-->
+    <!--        <label for="mainImage">Main Image</label>-->
+    <!--        <input type="file" id="mainImage" name="imageFile" class="form-control">-->
+    <!--        <img th:src="${product.mainImageUrl}" alt="Main Image" style="max-width: 200px; margin-top: 10px;">-->
+    <!--    </div>-->
+
+    <!--    <div class="form-group">-->
+    <!--        <label>Extra Images</label>-->
+    <!--        <div id="extraImagesContainer">-->
+    <!--            <div class="extra-image-input mb-2">-->
+    <!--                <input type="hidden" name="imageIds" value="">-->
+    <!--                <input type="text" name="imageNames" class="form-control mb-1" placeholder="Image Name">-->
+    <!--                <input type="file" name="extraImageFiles" class="form-control">-->
+    <!--            </div>-->
+    <!--        </div>-->
+
+    <!--        <button type="button" class="btn btn-secondary mt-2" id="addImageButton">+ Add Image</button>-->
+    <!--    </div>-->
+
+    <!--    <script>-->
+    <!--        document.getElementById('addImageButton').addEventListener('click', function () {-->
+    <!--            const container = document.getElementById('extraImagesContainer');-->
+    <!--            const newImageInput = document.createElement('div');-->
+    <!--            newImageInput.className = 'extra-image-input mb-2';-->
+    <!--            newImageInput.innerHTML = `-->
+    <!--            <input type="hidden" name="imageIds" value="">-->
+    <!--            <input type="text" name="imageNames" class="form-control mb-1" placeholder="Image Name">-->
+    <!--            <input type="file" name="extraImageFiles" class="form-control">-->
+    <!--        `;-->
+    <!--            container.appendChild(newImageInput);-->
+    <!--        });-->
+    <!--    </script>-->
+
+
+    <!--    // 2-->
+    <!--    <div class="form-group">-->
+    <!--        <label for="mainImage">Main Image</label>-->
+    <!--        <input type="file" id="mainImage" name="imageFile" class="form-control" onchange="previewMainImage(event)">-->
+    <!--        <img id="mainImagePreview"-->
+    <!--             th:src="${product.mainImageUrl}"-->
+    <!--             style="max-width: 200px; margin-top: 10px;"-->
+    <!--             alt="Main Image Preview">-->
+    <!--    </div>-->
+
+    <!--    <div class="form-group">-->
+    <!--        <label>Extra Images</label>-->
+    <!--        <div id="extraImagesContainer">-->
+    <!--            <div class="extra-image-input mb-2">-->
+    <!--                <input type="hidden" name="imageIds" value="">-->
+    <!--                <input type="text" name="imageNames" class="form-control mb-1" placeholder="Image Name">-->
+    <!--                <input type="file" name="extraImageFiles" class="form-control" onchange="previewExtraImage(event, this)">-->
+    <!--                <img class="extra-image-preview" style="max-width: 150px; margin-top: 10px; display: none;" alt="Extra Image Preview">-->
+    <!--            </div>-->
+    <!--        </div>-->
+
+    <!--        <button type="button" class="btn btn-secondary mt-2" id="addImageButton">+ Add Image</button>-->
+    <!--    </div>-->
+
+    <!--    <script>-->
+    <!--        // Preview cho Main Image-->
+    <!--        function previewMainImage(event) {-->
+    <!--            const output = document.getElementById('mainImagePreview');-->
+    <!--            output.src = URL.createObjectURL(event.target.files[0]);-->
+    <!--            output.onload = function () {-->
+    <!--                URL.revokeObjectURL(output.src); // Giải phóng bộ nhớ-->
+    <!--            }-->
+    <!--        }-->
+
+    <!--        // Preview cho Extra Images-->
+    <!--        function previewExtraImage(event, input) {-->
+    <!--            const preview = input.nextElementSibling;-->
+    <!--            preview.src = URL.createObjectURL(event.target.files[0]);-->
+    <!--            preview.style.display = 'block';-->
+    <!--            preview.onload = function () {-->
+    <!--                URL.revokeObjectURL(preview.src); // Giải phóng bộ nhớ-->
+    <!--            }-->
+    <!--        }-->
+
+    <!--        // Thêm form chọn Extra Image mới-->
+    <!--        document.getElementById('addImageButton').addEventListener('click', function () {-->
+    <!--            const container = document.getElementById('extraImagesContainer');-->
+    <!--            const newImageInput = document.createElement('div');-->
+    <!--            newImageInput.className = 'extra-image-input mb-2';-->
+    <!--            newImageInput.innerHTML = `-->
+    <!--            <input type="hidden" name="imageIds" value="">-->
+    <!--            <input type="text" name="imageNames" class="form-control mb-1" placeholder="Image Name">-->
+    <!--            <input type="file" name="extraImageFiles" class="form-control" onchange="previewExtraImage(event, this)">-->
+    <!--            <img class="extra-image-preview" style="max-width: 150px; margin-top: 10px; display: none;" alt="Extra Image Preview">-->
+    <!--        `;-->
+    <!--            container.appendChild(newImageInput);-->
+    <!--        });-->
+    <!--    </script>-->
+
+    <!-- Start 3-->
+    <!--        <div class="form-group">-->
+    <!--            <input th:field="*{mainImageUrl}" type="hidden">-->
+    <!--            <label for="mainImage">Main Image</label>-->
+    <!--            <input type="file" id="mainImage" name="imageFile" class="form-control" accept="image/*" onchange="previewMainImage(event)">-->
+    <!--            <div id="mainImagePreview" style="margin-top: 10px;">-->
+    <!--                <img th:if="${product.mainImageUrl}" th:src="${product.mainImageUrl}" alt="Main Image" style="max-width: 200px;">-->
+    <!--            </div>-->
+    <!--        </div>-->
+
+    <!--        <div class="form-group">-->
+    <!--            <label>Extra Images</label>-->
+    <!--            <div id="extraImagesContainer">-->
+    <!--                <div class="extra-image-input mb-2">-->
+    <!--                    <input type="hidden" name="imageIds" value="">-->
+    <!--                    <input type="text" name="imageNames" class="form-control mb-1" placeholder="Image Name">-->
+    <!--                    <input type="file" name="extraImageFiles" class="form-control" accept="image/*" onchange="previewExtraImage(event, this)">-->
+    <!--                </div>-->
+    <!--            </div>-->
+
+    <!--            <button type="button" class="btn btn-secondary mt-2" id="addImageButton">+ Add Image</button>-->
+
+    <!--            <div id="extraImagesPreview" style="margin-top: 10px;">-->
+    <!--                <div th:each="image : ${product.images}">-->
+    <!--                    <img th:src="${image.name}" style="max-width: 150px; margin-right: 10px;">-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+
+    <!--        <script>-->
+    <!--            // Hiển thị ảnh chính khi người dùng chọn-->
+    <!--            function previewMainImage(event) {-->
+    <!--                const previewContainer = document.getElementById('mainImagePreview');-->
+    <!--                previewContainer.innerHTML = '';  // Xóa ảnh cũ-->
+
+    <!--                const file = event.target.files[0];-->
+    <!--                if (file) {-->
+    <!--                    const img = document.createElement('img');-->
+    <!--                    img.src = URL.createObjectURL(file);-->
+    <!--                    img.style.maxWidth = '200px';-->
+    <!--                    previewContainer.appendChild(img);-->
+    <!--                }-->
+    <!--            }-->
+
+    <!--            // Hiển thị ảnh extra khi người dùng chọn-->
+    <!--            function previewExtraImage(event, input) {-->
+    <!--                const container = input.parentElement.nextElementSibling || document.getElementById('extraImagesPreview');-->
+    <!--                const file = event.target.files[0];-->
+    <!--                if (file) {-->
+    <!--                    const img = document.createElement('img');-->
+    <!--                    img.src = URL.createObjectURL(file);-->
+    <!--                    img.style.maxWidth = '150px';-->
+    <!--                    img.style.marginRight = '10px';-->
+    <!--                    container.appendChild(img);-->
+    <!--                }-->
+    <!--            }-->
+
+    <!--            // Thêm form chọn ảnh mới-->
+    <!--            document.getElementById('addImageButton').addEventListener('click', function () {-->
+    <!--                const container = document.getElementById('extraImagesContainer');-->
+    <!--                const newImageInput = document.createElement('div');-->
+    <!--                newImageInput.className = 'extra-image-input mb-2';-->
+    <!--                newImageInput.innerHTML = `-->
+    <!--                <input type="hidden" name="imageIds" value="">-->
+    <!--                <input type="text" name="imageNames" class="form-control mb-1" placeholder="Image Name">-->
+    <!--                <input type="file" name="extraImageFiles" class="form-control" accept="image/*" onchange="previewExtraImage(event, this)">-->
+    <!--            `;-->
+    <!--                container.appendChild(newImageInput);-->
+    <!--            });-->
+    <!--        </script>-->
+    <!--    End 3-->
+
+    <!--Start 4-->
+    <!--    <div class="form-group">-->
+    <!--        <label for="mainImage">Main Image</label>-->
+    <!--        <input type="file" id="mainImage" name="imageFile" class="form-control" onchange="previewMainImage(event)">-->
+    <!--        <div id="mainImagePreview" style="margin-top: 10px;">-->
+    <!--            <img th:src="${product.mainImageUrl}" alt="Main Image" style="max-width: 200px;"/>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
+    <!--    <div class="form-group">-->
+    <!--        <label>Extra Images</label>-->
+    <!--        <div id="extraImagesContainer">-->
+    <!--            &lt;!&ndash; Hiển thị các ảnh đã có từ trước &ndash;&gt;-->
+    <!--            <div th:each="image : ${product.images}" class="existing-image mb-2">-->
+    <!--                <input type="hidden" name="imageIds" th:value="${image.id}">-->
+    <!--                <input type="text" name="imageNames" class="form-control mb-1" th:value="${image.name}"-->
+    <!--                       placeholder="Image Name">-->
+    <!--                <img th:src="@{/images/} + ${image.name}" alt="Extra Image"-->
+    <!--                     style="max-width: 200px; display: block; margin-top: 5px;">-->
+    <!--            </div>-->
+
+    <!--            &lt;!&ndash; Form chọn ảnh mới &ndash;&gt;-->
+    <!--            <div class="extra-image-input mb-2">-->
+    <!--                <input type="file" name="extraImageFiles" class="form-control" onchange="previewExtraImage(this)">-->
+    <!--                <div class="extra-image-preview mt-2"></div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+
+    <!--        <button type="button" class="btn btn-secondary mt-2" id="addImageButton">+ Add Image</button>-->
+    <!--    </div>-->
+
+    <!--    <script>-->
+    <!--        // Xem trước ảnh chính khi người dùng chọn ảnh-->
+    <!--        function previewMainImage(event) {-->
+    <!--            const reader = new FileReader();-->
+    <!--            reader.onload = function (e) {-->
+    <!--                const imgElement = document.createElement('img');-->
+    <!--                imgElement.src = e.target.result;-->
+    <!--                imgElement.style.maxWidth = '200px';-->
+    <!--                const previewContainer = document.getElementById('mainImagePreview');-->
+    <!--                previewContainer.innerHTML = ''; // Xóa ảnh cũ-->
+    <!--                previewContainer.appendChild(imgElement);-->
+    <!--            };-->
+    <!--            reader.readAsDataURL(event.target.files[0]);-->
+    <!--        }-->
+
+    <!--        // Xem trước ảnh phụ khi chọn ảnh mới-->
+    <!--        function previewExtraImage(input) {-->
+    <!--            if (input.files && input.files[0]) {-->
+    <!--                const reader = new FileReader();-->
+    <!--                reader.onload = function (e) {-->
+    <!--                    const imgElement = document.createElement('img');-->
+    <!--                    imgElement.src = e.target.result;-->
+    <!--                    imgElement.style.maxWidth = '200px';-->
+    <!--                    const previewContainer = input.nextElementSibling;-->
+    <!--                    previewContainer.innerHTML = ''; // Xóa ảnh cũ (nếu có)-->
+    <!--                    previewContainer.appendChild(imgElement);-->
+    <!--                };-->
+    <!--                reader.readAsDataURL(input.files[0]);-->
+    <!--            }-->
+    <!--        }-->
+
+    <!--        // Thêm form chọn ảnh mới-->
+    <!--        document.getElementById('addImageButton').addEventListener('click', function () {-->
+    <!--            const container = document.getElementById('extraImagesContainer');-->
+    <!--            const newImageInput = document.createElement('div');-->
+    <!--            newImageInput.className = 'extra-image-input mb-2';-->
+    <!--            newImageInput.innerHTML = `-->
+    <!--            <input type="file" name="extraImageFiles" class="form-control" onchange="previewExtraImage(this)">-->
+    <!--            <div class="extra-image-preview mt-2"></div>-->
+    <!--        `;-->
+    <!--            container.appendChild(newImageInput);-->
+    <!--        });-->
+    <!--    </script>-->
+    <!--    End 4-->
+
+    <!--    5-->
+    <!-- images_section.html -->
+    <div class="container mt-3" id="image-section">
+        <h5>Product Images</h5>
+
+        <div class="form-group">
+            <input th:field="*{mainImageUrl}" type="hidden">
+            <label for="mainImage">Main Image</label>
+            <input type="file" id="mainImage" name="imageFile" class="form-control" accept="image/*"
+                   onchange="previewMainImage(event)">
+            <div id="mainImagePreview" style="margin-top: 10px;">
+                <img th:if="${product.mainImageUrl}" th:src="${product.mainImageUrl}" alt="Main Image"
+                     style="max-width: 200px;">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="extraImages" class="form-label">Extra Images</label>
+            <input type="file" class="form-control" id="extraImages" multiple accept="image/*">
+        </div>
+
+        <div id="imagePreview" class="mt-3 row">
+            <!-- Preview uploaded images -->
+            <div class="col-md-3" th:each="image : ${product.images}">
+                <div class="card">
+                    <img th:src="@{'/images/products/' + ${image.name}}" class="card-img-top" alt="Product Image">
+                    <button type="button" class="btn btn-danger mt-2 btn-sm w-100" onclick="removeImage(this)">Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // Hiển thị ảnh chính khi người dùng chọn
+        function previewMainImage(event) {
+            const previewContainer = document.getElementById('mainImagePreview');
+            previewContainer.innerHTML = '';  // Xóa ảnh cũ
+
+            const file = event.target.files[0];
+            if (file) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.style.maxWidth = '200px';
+                previewContainer.appendChild(img);
+            }
+        }
+
+        // JavaScript to handle previewing images dynamically
+        document.getElementById('extraImages').addEventListener('change', function (event) {
+            const previewContainer = document.getElementById('imagePreview');
+            previewContainer.innerHTML = ''; // Clear existing previews
+
+            Array.from(event.target.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-3';
+                    col.innerHTML = `
+                    <div class="card">
+                        <img src="${e.target.result}" class="card-img-top" alt="Image Preview">
+                        <button type="button" class="btn btn-danger mt-2 btn-sm w-100" onclick="removeImage(this)">Remove</button>
+                    </div>`;
+                    previewContainer.appendChild(col);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        function removeImage(button) {
+            button.closest('.col-md-3').remove();
+        }
+    </script>
+
+</div>

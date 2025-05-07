@@ -1,0 +1,302 @@
+<div class="sidebar sidebar-style-2" data-background-color="dark2" xmlns:th="http://www.thymeleaf.org"
+     th:fragment="sidebar">
+    <div class="sidebar-wrapper scrollbar scrollbar-inner">
+        <div class="sidebar-content">
+            <div class="user">
+                <div class="avatar-sm float-left mr-2">
+                    <img th:src="@{/assets-of-atlantis/img/profile.jpg}" alt="..." class="avatar-img rounded-circle">
+                </div>
+                <div class="info">
+                    <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+								<span>
+									<data th:text="${session.user.user.getFullName()}"></data>
+                                    									<span class="user-level"
+                                                                              th:text="${session.user.getAuthorities()[0]}"></span>
+									<span class="caret"></span>
+								</span>
+                    </a>
+                    <div class="clearfix"></div>
+
+                    <div class="collapse in" id="collapseExample">
+                        <ul class="nav">
+                            <li>
+                                <a th:href="@{/admin/my-profile}">
+                                    <span class="link-collapse">My Profile</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#edit">
+                                    <span class="link-collapse">Edit Profile</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#settings">
+                                    <span class="link-collapse">Settings</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <ul class="nav nav-primary">
+
+                <!--                <li class="nav-item active">-->
+                <!--                    <a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">-->
+                <!--                        <i class="fas fa-home"></i>-->
+                <!--                        <p>Dashboard</p>-->
+                <!--                        <span class="caret"></span>-->
+                <!--                    </a>-->
+                <!--                    <div class="collapse" id="dashboard">-->
+                <!--                        <ul class="nav nav-collapse">-->
+                <!--                            <li>-->
+                <!--                                <a href="../demo1/index.html">-->
+                <!--                                    <span class="sub-item">Dashboard 1</span>-->
+                <!--                                </a>-->
+                <!--                            </li>-->
+                <!--                            <li>-->
+                <!--                                <a href="../demo2/index.html">-->
+                <!--                                    <span class="sub-item">Dashboard 2</span>-->
+                <!--                                </a>-->
+                <!--                            </li>-->
+                <!--                        </ul>-->
+                <!--                    </div>-->
+                <!--                </li>-->
+
+                <!--                <li class="nav-section">-->
+                <!--							<span class="sidebar-mini-icon">-->
+                <!--								<i class="fa fa-ellipsis-h"></i>-->
+                <!--							</span>-->
+                <!--                    <h4 class="text-section">Components</h4>-->
+                <!--                </li>-->
+
+                <!--                User-->
+                <li class="nav-item">
+                    <a href="/admin-user">
+                        <i class="fas fa-user"></i>
+                        <p>User</p>
+                    </a>
+                    <!--                    <a data-toggle="collapse" href="#submenu3">-->
+                    <!--                        <i class="fas fa-user"></i>-->
+                    <!--                        <p>User</p>-->
+                    <!--                        <span class="caret"></span>-->
+                    <!--                    </a>-->
+                    <!--                    <div class="collapse" id="submenu3">-->
+                    <!--                        <ul class="nav nav-collapse">-->
+                    <!--                            <li>-->
+                    <!--                                <a href="/admin-user">-->
+                    <!--                                    <span class="sub-item">User List</span>-->
+                    <!--                                </a>-->
+                    <!--                            </li>-->
+                    <!--                            <li>-->
+                    <!--                                <a href="/admin-user/createUser">-->
+                    <!--                                    <span class="sub-item">Add User</span>-->
+                    <!--                                </a>-->
+                    <!--                            </li>-->
+                    <!--                        </ul>-->
+                    <!--                    </div>-->
+                </li>
+
+                <!--                Category-->
+                <li class="nav-item">
+                    <a href="/admin-category">
+                        <i class="fas fa-bars"></i>
+                        <p>Category</p>
+                    </a>
+<!--                    <a data-toggle="collapse" href="#submenu">-->
+<!--                        <i class="fas fa-bars"></i>-->
+<!--                        <p>Category</p>-->
+<!--                        <span class="caret"></span>-->
+<!--                    </a>-->
+<!--                    <div class="collapse" id="submenu">-->
+<!--                        <ul class="nav nav-collapse">-->
+<!--                            &lt;!&ndash;                            <li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <a data-toggle="collapse" href="#subnav1">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <span class="sub-item">Test</span>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <span class="caret"></span>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                </a>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <div class="collapse" id="subnav1">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <ul class="nav nav-collapse subnav">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        <li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            <a href="/admin/test">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                                <span class="sub-item">Test</span>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            </a>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        </li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        <li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            <a href="/admin/test2">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                                <span class="sub-item">Test 2</span>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            </a>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        </li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        <li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            <a href="/admin/test3">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                                <span class="sub-item">Test 3</span>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            </a>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        </li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    </ul>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                            </li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                            <li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <a data-toggle="collapse" href="#subnav2">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <span class="sub-item">Level 1</span>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <span class="caret"></span>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                </a>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <div class="collapse" id="subnav2">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <ul class="nav nav-collapse subnav">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        <li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            <a href="#">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                                <span class="sub-item">Level 2</span>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            </a>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        </li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    </ul>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                            </li>&ndash;&gt;-->
+<!--                            <li>-->
+<!--                                <a href="/admin-category">-->
+<!--                                    <span class="sub-item">Category List</span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a href="/admin-category/createCategory">-->
+<!--                                    <span class="sub-item">Add Category</span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            &lt;!&ndash;                            <li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <a href="/admin/test">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <span class="sub-item">Test</span>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                </a>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                            </li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                            <li>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <a href="/admin/test2">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <span class="sub-item">Test 2</span>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                </a>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                            </li>&ndash;&gt;-->
+<!--                        </ul>-->
+<!--                    </div>-->
+                </li>
+
+                <!--                Brand-->
+                <li class="nav-item">
+                    <a href="/admin-brand">
+                        <i class="fas fa-regular fa-building"></i>
+                        <p>Brand</p>
+                    </a>
+<!--                    <a data-toggle="collapse" href="#submenu2">-->
+<!--                        <i class="fas fa-regular fa-building"></i>-->
+<!--                        <p>Brand</p>-->
+<!--                        <span class="caret"></span>-->
+<!--                    </a>-->
+<!--                    <div class="collapse" id="submenu2">-->
+<!--                        <ul class="nav nav-collapse">-->
+<!--                            <li>-->
+<!--                                <a href="/admin-brand">-->
+<!--                                    <span class="sub-item">Brand List</span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a href="/admin-brand/createBrand">-->
+<!--                                    <span class="sub-item">Add Brand</span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+                </li>
+
+                <!--                Series-->
+                <li class="nav-item">
+                    <a href="/admin-series">
+                        <i class="fa fa-solid fa-layer-group"></i>
+                        <p>Series</p>
+                    </a>
+<!--                    <a data-toggle="collapse" href="#submenu7">-->
+<!--                        <i class="fa fa-solid fa-layer-group"></i>-->
+<!--                        <p>Series</p>-->
+<!--                        <span class="caret"></span>-->
+<!--                    </a>-->
+<!--                    <div class="collapse" id="submenu7">-->
+<!--                        <ul class="nav nav-collapse">-->
+<!--                            <li>-->
+<!--                                <a href="/admin-series">-->
+<!--                                    <span class="sub-item">Series List</span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a href="/admin-series/createSeries">-->
+<!--                                    <span class="sub-item">Add Series</span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+                </li>
+                <!--                Product-->
+                <li class="nav-item">
+                    <a href="/admin-product">
+                        <i class="fas fa-box-open"></i>
+                        <p>Product</p>
+                    </a>
+<!--                    <a data-toggle="collapse" href="#submenu4">-->
+<!--                        <i class="fas fa-box-open"></i>-->
+<!--                        <p>Product</p>-->
+<!--                        <span class="caret"></span>-->
+<!--                    </a>-->
+<!--                    <div class="collapse" id="submenu4">-->
+<!--                        <ul class="nav nav-collapse">-->
+<!--                            <li>-->
+<!--                                <a href="/admin-product">-->
+<!--                                    <span class="sub-item">Product List</span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a href="#">-->
+<!--                                    <span class="sub-item">Add Product</span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+                </li>
+
+                <!--                Customer-->
+                <li class="nav-item">
+                    <a href="/admin-customer">
+                        <i class="fas fa-users"></i>
+                        <p>Customer</p>
+                    </a>
+<!--                    <a data-toggle="collapse" href="#submenu5">-->
+<!--                        <i class="fas fa-users"></i>-->
+<!--                        <p>Customer</p>-->
+<!--                        <span class="caret"></span>-->
+<!--                    </a>-->
+<!--                    <div class="collapse" id="submenu5">-->
+<!--                        <ul class="nav nav-collapse">-->
+<!--                            <li>-->
+<!--                                <a href="/admin-customer">-->
+<!--                                    <span class="sub-item">Customer List</span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+                </li>
+
+                <!--                Order-->
+                <li class="nav-item">
+                    <a href="/admin-order">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Order</p>
+                    </a>
+<!--                    <a data-toggle="collapse" href="#submenu6">-->
+<!--                        <i class="fas fa-shopping-cart"></i>-->
+<!--                        <p>Order</p>-->
+<!--                        <span class="caret"></span>-->
+<!--                    </a>-->
+<!--                    <div class="collapse" id="submenu6">-->
+<!--                        <ul class="nav nav-collapse">-->
+<!--                            <li>-->
+<!--                                <a href="/admin-order">-->
+<!--                                    <span class="sub-item">Order List</span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

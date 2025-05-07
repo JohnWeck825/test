@@ -1,0 +1,53 @@
+<head th:fragment="head(pageTitle)" xmlns:th="http://www.thymeleaf.org">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>[[${pageTitle}]]</title>
+    <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+    <link rel="icon" th:href="@{/assets-of-atlantis/img/icon.ico}" type="image/x-icon"/>
+
+    <!-- Fonts and icons -->
+    <script th:src="@{/assets-of-atlantis/js/plugin/webfont/webfont.min.js}"></script>
+    <script th:href="@{/assets/fontawesome-free-6.6.0-web/css/fontawesome.css}"></script>
+    <script th:href="@{/assets/fontawesome-free-6.6.0-web/css/fontawesome.min.css}"></script>
+    <script th:href="@{/assets/fontawesome-free-6.6.0-web/css/all.css}"></script>
+    <script th:href="@{/assets/fontawesome-free-6.6.0-web/css/all.min.css}"></script>
+
+    <style>
+        .custom-box {
+            /*background-color: #11192b;*/
+            /*color: #ffffff; !* Text màu trắng *!*/
+            /*padding: 10px 20px; !* Padding bên trong *!*/
+            /*border-radius: 8px; !* Bó góc mềm mại *!*/
+            /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); !* Đổ bóng *!*/
+            /*display: inline-block; !* Để ô không chiếm toàn bộ chiều ngang *!*/
+            /*font-weight: bold; !* Tăng độ đām cho text *!*/
+
+            display: inline-block;
+            padding: 8px 16px; /* Padding inside the box */
+            background-color: #1b2330; /* Darker shade of #202940 */
+            color: white; /* Text color */
+            border-radius: 8px; /* Rounded corners */
+            font-size: 1.25rem; /* Adjust font size */
+            font-weight: bold;
+            box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.4); /* Shadow towards bottom-left */
+            position: relative; /* To ensure it's above other content */
+            z-index: 1;
+        }
+    </style>
+
+    <script>
+        WebFont.load({
+            google: {"families":["Lato:300,400,700,900"]},
+            custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ['../assets-of-atlantis/css/fonts.min.css']},
+            active: function() {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" th:href="@{/assets-of-atlantis/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/assets-of-atlantis/css/atlantis.min.css}">
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" th:href="@{/assets-of-atlantis/css/demo.css}">
+</head>

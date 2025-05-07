@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="admin/fragments/head :: head('Layout')"></head>
+<body data-background-color="dark">
+<div class="wrapper">
+    <div class="main-header">
+        <!-- Logo Header -->
+        <div th:replace="admin/fragments/header-logo :: header-logo"></div>
+        <!-- End Logo Header -->
+
+        <!-- Navbar Header -->
+        <nav th:replace="admin/fragments/navbar-header :: navbar-header"></nav>
+        <!-- End Navbar -->
+    </div>
+
+    <!-- Sidebar -->
+    <div th:replace="admin/fragments/sidebar :: sidebar"></div>
+    <!-- End Sidebar -->
+
+    <!--    Main Panel-->
+    <div class="main-panel">
+        <div class="content">
+            <div layout:fragment="content"></div>
+            <!--            <div th:replace="admin/fragments/pagination :: pagination"></div>-->
+        </div>
+
+        <!--        <div class="content" th:replace="~{this :: content}"></div>-->
+        <footer th:replace="admin/fragments/footer :: footer"></footer>
+    </div>
+    <!--End Main Panel-->
+
+    <!-- Custom template | don't include it in your project! -->
+    <div th:replace="admin/fragments/custom-template :: custom-template"></div>
+    <!-- End Custom template -->
+</div>
+
+<!--js-->
+<div th:replace="admin/fragments/script :: script"></div>
+<!--End js-->
+
+</body>
+</html>

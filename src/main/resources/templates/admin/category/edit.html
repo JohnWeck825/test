@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/fragments/layout-without-pagination}"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="admin/fragments/head :: head('Category management')">
+    <style>
+        .img_thumb-container {
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .img-thumb {
+            object-fit: cover;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+    </style>
+</head>
+<body data-background-color="dark">
+
+<div layout:fragment="content">
+    <!--    <div class="row">-->
+    <!--        <div class="col-md-12">-->
+    <!--            <div class="card">-->
+    <!--                <div class="card-header">-->
+    <!--                    <h4 class="card-title">Edit category</h4>-->
+    <!--                </div>-->
+    <!--                <div class="card-body">-->
+    <!--                    <div class="table-responsive">-->
+    <!--                        <form th:action="@{/admin-category/save}" th:object="${category}"-->
+    <!--                              method="post" enctype="multipart/form-data">-->
+    <!--                            <input type="hidden" th:field="*{id}">-->
+    <!--                            <div class="row">-->
+    <!--                                <div class="col-md-12">-->
+    <!--                                    <div class="form-group form-group-default">-->
+    <!--                                        <label for="Name">Name</label>-->
+    <!--                                        <input id="Name" type="text" class="form-control"-->
+    <!--                                               placeholder="fill category name"-->
+    <!--                                               th:field="*{name}">-->
+    <!--                                    </div>-->
+    <!--                                </div>-->
+
+    <!--                                <div class="col-md-12">-->
+    <!--                                    <div class="form-group form-group-default">-->
+    <!--                                        <label for="categorySlug">Slug</label>-->
+    <!--                                        <input id="categorySlug" type="text" class="form-control"-->
+    <!--                                               placeholder="fill category slug" name="categorySlug"-->
+    <!--                                               th:field="*{slug}">-->
+    <!--                                    </div>-->
+    <!--                                </div>-->
+
+    <!--                                &lt;!&ndash;                                <div class="col-md-12">&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                    <div class="form-group form-group-default">&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                        <label for="formGroupDefaultSelect">Select</label>&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                        <select class="form-control" id="formGroupDefaultSelect"&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                                th:field="*{parent}">&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                            <option th:text="${category.parent}"></option>&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                            <option th:each="parentCategory : ${categories}"&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                                    th:value="${parentCategory.id}"&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                                    th:text="${parentCategory.id} + ' - ' + ${parentCategory.name}"></option>&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                        </select>&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                    </div>&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                </div>&ndash;&gt;-->
+    <!--                                <div class="col-md-6">-->
+    <!--                                    <div class="form-check form-group form-group-default">-->
+    <!--                                        <label>Status</label>-->
+    <!--                                        <div class="form-check-inline">-->
+    <!--                                            <label class="form-radio-label">-->
+    <!--                                                <input class="form-radio-input" type="radio"-->
+    <!--                                                       name="categoryStatus" value="1" checked=""-->
+    <!--                                                       th:field="*{active}">-->
+    <!--                                                <span class="form-radio-sign">Enable</span>-->
+    <!--                                            </label>-->
+    <!--                                            <label class="form-radio-label ml-3">-->
+    <!--                                                <input class="form-radio-input" type="radio"-->
+    <!--                                                       name="categoryStatus" value="0"-->
+    <!--                                                       th:field="*{active}">-->
+    <!--                                                <span class="form-radio-sign">Disable</span>-->
+    <!--                                            </label>-->
+    <!--                                        </div>-->
+
+    <!--                                    </div>-->
+    <!--                                </div>-->
+
+    <!--                                <div class="col-md-12">-->
+    <!--                                    <div class="form-group form-group-default">-->
+    <!--                                        <div style="margin-bottom: 6px">-->
+    <!--                                            <input th:field="*{photoUrl}" type="hidden">-->
+    <!--                                            <label for="imageFile">Category Image</label>-->
+    <!--                                            <input type="file" class="form-control-file"-->
+    <!--                                                   id="imageFile"-->
+    <!--                                                   name="imageFile">-->
+    <!--                                        </div>-->
+
+    <!--                                    </div>-->
+    <!--                                </div>-->
+    <!--                                <div class="col-md-12">-->
+    <!--                                    <div class="form-group form-group-default">-->
+    <!--                                        <div class="img_thumb-container">-->
+    <!--                                            <img th:src="${category.photoUrl}" alt="Category Image" class="img-thumb">-->
+    <!--                                        </div>-->
+    <!--                                    </div>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <button type="submit" class="btn btn-primary">Update</button>-->
+    <!--                        </form>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
+    <!--    <div class="row">-->
+    <!--        <div class="col-md-12">-->
+    <!--            <div class="card">-->
+    <!--                <div class="card-header">-->
+    <!--                    <h4 class="card-title">Edit Category</h4>-->
+    <!--                </div>-->
+    <!--                <div class="card-body">-->
+    <!--                    <form th:action="@{/admin-category/save}" th:object="${category}" method="post" enctype="multipart/form-data">-->
+    <!--                        <input type="hidden" th:field="*{id}">-->
+
+    <!--                        <div class="form-group row">-->
+    <!--                            <label class="col-sm-2 col-form-label">Name</label>-->
+    <!--                            <div class="col-sm-10">-->
+    <!--                                <input type="text" class="form-control" th:field="*{name}" placeholder="Enter category name">-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+
+    <!--                        <div class="form-group row">-->
+    <!--                            <label class="col-sm-2 col-form-label">Slug</label>-->
+    <!--                            <div class="col-sm-10">-->
+    <!--                                <input type="text" class="form-control" th:field="*{slug}" placeholder="Enter category slug">-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+
+    <!--                        <div class="form-group row">-->
+    <!--                            <label class="col-sm-2 col-form-label">Status</label>-->
+    <!--                            <div class="col-sm-10">-->
+    <!--                                <div class="form-check form-check-inline">-->
+    <!--                                    <input class="form-check-input" type="radio" name="categoryStatus" value="1" th:checked="${category.active == 1}" th:field="*{active}">-->
+    <!--                                    <label class="form-check-label">Enable</label>-->
+    <!--                                </div>-->
+    <!--                                <div class="form-check form-check-inline">-->
+    <!--                                    <input class="form-check-input" type="radio" name="categoryStatus" value="0" th:checked="${category.active == 0}" th:field="*{active}">-->
+    <!--                                    <label class="form-check-label">Disable</label>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+
+    <!--                        <div class="form-group row">-->
+    <!--                            <label class="col-sm-2 col-form-label">Category Image</label>-->
+    <!--                            <div class="col-sm-10">-->
+    <!--                                <input type="file" class="form-control-file" id="imageFile" name="imageFile">-->
+    <!--                                <div class="img_thumb-container mt-2">-->
+    <!--                                    <img th:src="${category.photoUrl}" alt="Category Image" class="img-fluid img-thumb" th:if="${category.photoUrl}" style="max-width: 200px; height: auto;">-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+
+
+    <!--                        <button type="submit" class="btn btn-primary">Update</button>-->
+    <!--                    </form>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
+    <div class="container mt-5">
+        <div th:if="${errorMessage}" th:class="${'alert ' + alertClass}" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+        <div th:if="${errorMessage2}" th:class="${'alert ' + alertClass}" role="alert">
+            <span th:text="${errorMessage2}"></span>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card rounded shadow">
+                    <div class="card-header bg-primary text-white rounded-top">
+                        <h4 class="card-title mb-0">Edit Category</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form th:action="@{/admin-category/update}" th:object="${category}"
+                              method="post" enctype="multipart/form-data"
+                              id="editCategoryForm">
+
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                            <input type="hidden" th:field="*{id}">
+
+                            <!-- Name -->
+                            <div class="mb-3">
+                                <label for="Name" class="form-label">Name</label>
+                                <input id="Name" type="text" class="form-control" required="required"
+                                       placeholder="Enter category name" th:field="*{name}">
+                            </div>
+
+                            <!-- Slug -->
+                            <div class="mb-3">
+                                <label for="categorySlug" class="form-label">Slug</label>
+                                <input id="categorySlug" type="text" class="form-control" required="required"
+                                       placeholder="Enter category slug" th:field="*{slug}">
+                            </div>
+
+                            <!-- Status -->
+                            <div class="mb-3">
+                                <label class="form-label">Status</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio"
+                                           th:field="*{active}" value="1" id="statusEnable">
+                                    <label class="form-check-label" for="statusEnable">Enable</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio"
+                                           th:field="*{active}" value="0" id="statusDisable">
+                                    <label class="form-check-label" for="statusDisable">Disable</label>
+                                </div>
+                            </div>
+
+                            <!-- Parent Category -->
+                            <div class="mb-3">
+                                <label class="form-label" for="categoryParent">Parent Category</label>
+                                <!--                                <label>-->
+                                <select th:field="*{parent}" class="form-control" id="categoryParent">
+                                    <option value="">Parent Category</option>
+                                    <option th:each="parentCategory : ${categories}"
+                                            th:value="${parentCategory.id}"
+                                            th:text="${parentCategory.name}"
+                                            th:selected="${parentCategory.id == category?.parent?.id}"></option>
+                                </select>
+                                <!--                                </label>-->
+                            </div>
+
+                            <!-- Image Upload -->
+                            <div class="mb-3">
+                                <input th:field="*{photoUrl}" type="hidden">
+                                <label for="imageFile" class="form-label">Category Image</label>
+                                <input type="file" class="form-control" id="imageFile" name="imageFile">
+                            </div>
+
+                            <!-- Display Uploaded Image -->
+                            <div class="mb-3 text-center">
+                                <div class="img_thumb-container rounded border p-2">
+                                    <img th:src="${category.photoUrl}" alt="Category Image"
+                                         class="img-thumb img-fluid rounded" style="max-height: 150px;">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 d-flex justify-content-between">
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-success me-2">Update</button>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="button" class="btn btn-link btn-primary btn-lg btn-sm"
+                                            data-bs-dismiss="modal" title="Go Back">
+                                        <a th:href="@{/admin-category}" class="btn btn-primary text-white"
+                                           style="text-decoration: none">Back</a>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Notify -->
+    <div th:replace="admin/fragments/modal :: modal_error"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!--    <script>-->
+    <!--        $(document).ready(function() {-->
+    <!--            $("form").on("submit", function(event) {-->
+    <!--                event.preventDefault(); // Ngăn chặn gửi form thông thường-->
+
+    <!--                // Lấy giá trị tên và slug-->
+    <!--                var name = $("input[name='name']").val();-->
+    <!--                var slug = $("input[name='slug']").val();-->
+    <!--                var categoryId = $("input[name='id']").val(); // ID của danh mục đang chỉnh sửa-->
+
+    <!--                // Gửi yêu cầu AJAX để kiểm tra tên và slug-->
+    <!--                $.post({-->
+    <!--                    url: "/admin-category/editCategory" + categoryId + "/check-name-and-slug",-->
+    <!--                    method: "POST",-->
+    <!--                    data: {-->
+    <!--                        name: name,-->
+    <!--                        slug: slug-->
+    <!--                    },-->
+    <!--                    success: function(response) {-->
+    <!--                        if (response !== "OK") {-->
+    <!--                            // Nếu có lỗi, hiển thị modal thông báo lỗi-->
+    <!--                            $("#errorMessage").text(response);-->
+    <!--                            $("#errorModal").modal("show");-->
+    <!--                        } else {-->
+    <!--                            // Nếu không có lỗi, gửi form-->
+    <!--                            $("form")[0].submit(); // Gửi form đi-->
+    <!--                        }-->
+    <!--                    }-->
+    <!--                });-->
+    <!--            });-->
+    <!--        });-->
+    <!--    </script>-->
+
+    <script>
+
+        // function getCsrfToken() {
+        //     var csrfToken = null;
+        //     var name = "XSRF-TOKEN="; // Tên của cookie CSRF
+        //     var decodedCookie = decodeURIComponent(document.cookie);
+        //     var ca = decodedCookie.split(';');
+        //     for (var i = 0; i < ca.length; i++) {
+        //         var c = ca[i];
+        //         while (c.charAt(0) == ' ') {
+        //             c = c.substring(1);
+        //         }
+        //         if (c.indexOf(name) == 0) {
+        //             csrfToken = c.substring(name.length, c.length);
+        //             break;
+        //         }
+        //     }
+        //     return csrfToken;
+        // }
+
+        $(document).ready(function () {
+            const form = $("#editCategoryForm"); // Đảm bảo chỉ lấy đúng form edit
+            // const csrfToken = $("meta[name='_csrf']").attr("content");
+            const csrfToken = $("input[name='_csrf']").val();
+
+            // const getCsrfToken = () => {
+            //     const name = "XSRF-TOKEN=";
+            //     const decodedCookie = decodeURIComponent(document.cookie);
+            //     const cookieArray = decodedCookie.split(';');
+            //     for (let i = 0; i < cookieArray.length; i++) {
+            //         const cookie = cookieArray[i].trim();
+            //         if (cookie.indexOf(name) === 0) {
+            //             return cookie.substring(name.length, cookie.length);
+            //         }
+            //     }
+            //     return "";
+            // };
+
+            form.on("submit", function (event) {
+                event.preventDefault(); // Ngăn chặn gửi form mặc định
+
+                // Lấy giá trị của name, slug và id
+                const name = $("input[name='name']").val();
+                const slug = $("input[name='slug']").val();
+                const categoryId = $("input[name='id']").val();
+                // const csrfToken = getCsrfToken();
+
+                // Gửi yêu cầu AJAX để kiểm tra tên và slug
+                $.ajax({
+                    url: `/admin-category/editCategory${categoryId}/check-name-and-slug`,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({name: name, slug: slug}),
+                    headers: {"X-CSRF-TOKEN": csrfToken},
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-XSRF-TOKEN", csrfToken);
+                    },
+                    success: function (response) {
+                        if (response !== "OK") {
+                            // Nếu có lỗi, hiển thị modal thông báo
+                            $("#errorMessage").text(response);
+                            $("#errorModal").modal("show");
+                        } else {
+                            // Nếu không có lỗi, gửi form bình thường
+                            form.off("submit"); // Bỏ sự kiện chặn submit
+                            form.submit(); // Gửi form
+                        }
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra trong quá trình kiểm tra. Vui lòng thử lại.");
+                    }
+                });
+                // $(".close").on("click", function () {
+                //     console.log("Close button clicked");
+                // });
+                // $('#errorModal').on('shown.bs.modal', function () {
+                //     $('#errorModal.close').focus();
+                // });
+            });
+
+        });
+
+        // $('#errorModal').on('shown.bs.modal', function () {
+        //     $('#errorModal.close').focus();
+        // });
+
+        $('#modalCloseBtn, #modalCloseBtnFooter').on().click(function () {
+            $('#errorModal').modal('hide');
+        })
+
+    </script>
+
+
+</div>
+</body>
+</html>

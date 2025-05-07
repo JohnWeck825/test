@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/fragments/layout-without-pagination}">
+<head th:replace="admin/fragments/head :: head('Category management')">
+    <style>
+        .img_thumb-container {
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .img-thumb {
+            object-fit: cover;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-preview-container {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .image-preview-container:hover {
+            transform: scale(1.05);
+        }
+
+        .object-fit-cover {
+            object-fit: cover;
+        }
+
+    </style>
+</head>
+<body data-background-color="dark">
+
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card rounded shadow">
+                    <div class="card-header bg-primary text-white rounded-top">
+                        <h4 class="card-title mb-0">Add Category</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form th:action="@{/admin-category/save}" th:object="${category}"
+                              method="post" enctype="multipart/form-data"
+                              id="addCategoryForm">
+
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                            <!--                            Previous URL:-->
+                            <!--                            <input type="hidden" name="redirectUrl" th:value="${redirectUrl}">-->
+
+                            <!--                            ID-->
+                            <input type="hidden" th:field="*{id}">
+
+                            <!-- Name -->
+                            <div class="mb-3">
+                                <label for="Name" class="form-label">Name</label>
+                                <input id="Name" type="text" class="form-control" required="required"
+                                       placeholder="Enter category name" th:field="*{name}">
+                            </div>
+
+                            <!-- Slug -->
+                            <div class="mb-3">
+                                <label for="categorySlug" class="form-label">Slug</label>
+                                <input id="categorySlug" type="text" class="form-control" required="required"
+                                       placeholder="Enter category slug" th:field="*{slug}">
+                            </div>
+
+                            <!-- Status -->
+                            <div class="mb-3">
+                                <label class="form-label d-block mb-2">Status</label>
+                                <div class="btn-group w-100" role="group" aria-label="Status selection">
+                                    <input class="btn-check" type="radio" autocomplete="off"
+                                           th:field="*{active}" value="1" id="statusEnable">
+                                    <label class="form-check-label" for="statusEnable">Enable</label>
+
+                                    <input class="btn btn-outline-danger" type="radio" autocomplete="off"
+                                           th:field="*{active}" value="0" id="statusDisable">
+                                    <label class="form-check-label" for="statusDisable">Disable</label>
+                                </div>
+                            </div>
+
+                            <!-- Parent Category -->
+                            <div class="mb-3">
+                                <label class="form-label" for="categorySelect">Parent Category</label>
+                                <!--                                <label>-->
+                                <select th:field="*{parent}" class="form-control" id="categorySelect">
+                                    <option value="">None</option>
+                                    <option th:each="category : ${categoryInForm}"
+                                            th:value="${category.id}"
+                                            th:text="${category.name}"></option>
+                                </select>
+                                <!--                                </label>-->
+                            </div>
+
+                            <!-- Image Upload -->
+                            <div class="mb-3">
+                                <input th:field="*{photoUrl}" type="hidden">
+                                <label for="imageFile" class="form-label">Category Image</label>
+                                <input type="file" class="form-control" id="imageFile" name="imageFile">
+                            </div>
+
+                            <!-- Display Uploaded Image -->
+                            <div class="mb-3 text-center">
+                                <div class="img_thumb-container rounded border p-2">
+                                    <img th:src="${category.photoUrl}" alt="Category Image"
+                                         class="img-thumb img-fluid rounded" style="max-height: 150px;">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 d-flex justify-content-between">
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-success me-2"
+                                            sec:authorize="hasAuthority('Editor1')">Add
+                                    </button>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="button" class="btn btn-link btn-primary btn-lg btn-sm"
+                                            data-toggle="tooltip" title="Go Back">
+                                        <a th:href="@{/admin-category}" class="btn text-white btn-primary"
+                                           style="text-decoration: none">Back</a>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Notify -->
+    <div th:replace="admin/fragments/modal :: modal_error"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const form = $("#addCategoryForm"); // Đảm bảo chỉ lấy đúng form edit
+            const csrfToken = $("input[name='_csrf']").val();
+
+            form.on("submit", function (event) {
+                event.preventDefault(); // Ngăn chặn gửi form mặc định
+
+                // Lấy giá trị của name, slug và id
+                const name = $("input[name='name']").val();
+                const categoryId = $("input[name='id']").val();
+                const slug = $("input[name='slug']").val();
+
+                // Gửi yêu cầu AJAX để kiểm tra tên và slug
+                $.ajax({
+                    url: `/admin-category/check-name-and-slug-in-add-form`,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({id: categoryId, name: name, slug: slug}),
+                    headers: {"X-CSRF-TOKEN": csrfToken},
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-XSRF-TOKEN", csrfToken);
+                    },
+                    success: function (response) {
+                        if (response !== "OK") {
+                            // Nếu có lỗi, hiển thị modal thông báo
+                            $("#errorMessage").text(response);
+                            $("#errorModal").modal("show");
+                        } else {
+                            // Nếu không có lỗi, gửi form bình thường
+                            form.off("submit"); // Bỏ sự kiện chặn submit
+                            form.submit(); // Gửi form
+                        }
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra trong quá trình kiểm tra. Vui lòng thử lại.");
+                    }
+                });
+            });
+        });
+
+        $('#modalCloseBtn, #modalCloseBtnFooter').on().click(function () {
+            $('#errorModal').modal('hide');
+        })
+    </script>
+
+
+</div>
+</body>
+</html>

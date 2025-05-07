@@ -1,0 +1,17 @@
+<div th:fragment="content" class="container mt-3" xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+    <!--    Description Title-->
+    <div class="mb-3">
+        <label for="Description Title" class="form-label">Description</label>
+        <textarea id="Description Title" type="text" class="form-control" style="overflow: auto;"
+                  placeholder="Eg: This is the description of the product" th:field="*{descriptionTitle}"></textarea>
+    </div>
+
+    <!--    Description Content-->
+    <div class="mb-3">
+        <label for="Description Content" class="form-label">Description</label>
+        <textarea id="Description Content" type="text" class="form-control" style="overflow: auto;"
+                  placeholder="Eg: This is the description of the product" th:field="*{descriptionContent}"></textarea>
+    </div>
+</div>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/fragments/layout}">
+<head th:replace="admin/fragments/head :: head('Product management')"></head>
+<body data-background-color="dark">
+
+<div layout:fragment="content">
+    <div class="page-inner">
+        <!--        <div class="mt-2 mb-4">-->
+        <!--            <h2 class="text-white pb-2">Welcome back, Hizrian!</h2>-->
+        <!--            <h5 class="text-white op-7 mb-4">Yesterday I was clever, so I wanted to change the world. Today I am-->
+        <!--                wise, so I am changing myself.</h5>-->
+        <!--        </div>-->
+
+    </div>
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="notify-box">
+                <div th:if="${errorMessage != null}" id="errorModal" class="alert alert-error text-center text-bold"
+                     role="alert" style="color: #0A0B11">[[${errorMessage}]]
+                </div>
+                <div th:if="${message != null}" id="successModal" class="alert alert-success text-center"
+                     role="alert" style="color: #0A0B11">[[${message}]]
+                </div>
+                <script>
+                </script>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <!--                <div class="actions" sec:authorize="hasAnyAuthority('Admin', 'Editor')">-->
+                <div class="d-flex align-items-center">
+                    <div class="custom-box">
+                        <h4 class="card-title">Product</h4>
+                    </div>
+                    <!--                    <button class="btn btn-primary btn-round ml-auto" data-toggle="modal"-->
+                    <!--                            data-target="#addRowModal">-->
+                    <!--                        <i class="fa fa-plus"></i>-->
+                    <!--                        Add Row-->
+                    <!--                    </button>-->
+                    <button class="btn btn-primary btn-round ml-auto btn-link" data-toggle="modal"
+                            data-target="#addRowModal">
+                        <a th:href="@{/admin-product/createProduct}" class="btn btn-primary btn-sm ml-1">
+                            <i class="fa fa-plus"></i> <label>Add Product</label>
+                        </a>
+
+                    </button>
+                </div>
+                <!--                </div>-->
+
+            </div>
+            <div class="card-body">
+                <!--                Modal-->
+                <!--                <div th:replace="/admin/category/addCategoryForm :: addCategoryForm"></div>-->
+
+                <!--                <div th:replace="/admin/category/editCategoryForm :: editCategoryForm"></div>-->
+
+                <div class="modal-delete" th:replace="admin/fragments/modal :: modal_option"></div>
+
+                <!--                <div th:replace="admin/fragments/modal :: modal-confirm-delete"></div>-->
+
+                <div class="table-responsive">
+                    <div id="add-row_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length" id="add-row_length"><label>Show <select
+                                        name="add-row_length" aria-controls="add-row"
+                                        class="form-control form-control-sm">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select> entries</label></div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div id="add-row_filter" class="dataTables_filter">
+                                    <form class="search-wrapper">
+                                        <label>Search:<input
+                                                type="search" name="keyword" class="form-control form-control-sm"
+                                                placeholder=""
+                                                aria-controls="add-row" th:value="${keyword}">
+                                            <button type="submit" class="rounded-circle">
+
+                                                <i class="fa fa-search search-icon rounded"></i>
+                                            </button>
+                                        </label>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="add-row"
+                                       class="display table table-striped table-hover dataTable"
+                                       role="grid" aria-describedby="add-row_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <th tabindex="0" aria-controls="add-row"
+                                            rowspan="1"
+                                            colspan="1"
+                                            style="width: 5%;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                ID<a
+                                                    th:replace="/admin/fragments/custom :: sort_link(${defaultUrl}, 'id')"
+                                                    class="sort-icon"></a></div>
+                                        </th>
+                                        <th tabindex="0" aria-controls="add-row"
+                                            rowspan="1"
+                                            colspan="1"
+                                            style="width: 10%; text-align: match-parent; height: 50px">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                Image<a><i class="fa fa-sort"></i></a></div>
+                                        </th>
+                                        <th tabindex="0" aria-controls="add-row"
+                                            rowspan="1"
+                                            colspan="1"
+                                            style="width: 20%;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                Name<a
+                                                    th:replace="/admin/fragments/custom :: sort_link(${defaultUrl}, 'name')"
+                                                    class="sort-icon"></a>
+                                            </div>
+                                        </th>
+                                        <th tabindex="0" aria-controls="add-row"
+                                            rowspan="1"
+                                            colspan="1"
+                                            style="width: 15%;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                Categories<a><i class="fa fa-sort"></i></a></div>
+                                        </th>
+                                        <th tabindex="0" aria-controls="add-row"
+                                            rowspan="1"
+                                            colspan="1"
+                                            style="width: 10%;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                Brand<a><i class="fa fa-sort"></i></a></div>
+                                        </th>
+                                        <th tabindex="0" aria-controls="add-row"
+                                            rowspan="1"
+                                            colspan="1"
+                                            style="width: 15%;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                Series<a><i class="fa fa-sort"></i></a></div>
+                                        </th>
+                                        <th tabindex="0" aria-controls="add-row" rowspan="1"
+                                            colspan="1"
+                                            style="width: 10%;">Status
+                                        </th>
+                                        <th style="width: 15%; text-align: match-parent"
+                                            tabindex="0"
+                                            aria-controls="add-row" rowspan="1" colspan="2">Action
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th rowspan="1" colspan="1" style="width: 5%">ID</th>
+                                        <th rowspan="1" colspan="1" style="width: 10%">Image</th>
+                                        <th rowspan="1" colspan="1" style="width: 20%">Name</th>
+                                        <th rowspan="1" colspan="1" style="width: 15%">Categories</th>
+                                        <th rowspan="1" colspan="1" style="width: 10%">Brand</th>
+                                        <th rowspan="1" colspan="1" style="width: 15%">Series</th>
+                                        <th rowspan="1" colspan="1" style="width: 10%">Status</th>
+                                        <th rowspan="1" colspan="2" style="text-align: match-parent; width: 15%">
+                                            Action
+                                        </th>
+                                    </tr>
+                                    </tfoot>
+                                    <tbody>
+                                    <tr role="row" class="odd" th:each="product : ${products}">
+                                        <td class="sorting_1" th:text="${product.id}"></td>
+                                        <td class="sorting_1">
+                                            <div class="image-wrapper">
+                                                <img class="image-container ui-corner-all lazy-load-overlay"
+                                                     style="width: 50px; height: 50px" th:src="${product.mainImageUrl}"
+                                                     alt="Product Image">
+                                            </div>
+                                        </td>
+                                        <td class="sorting_1" th:text="${product.name}"></td>
+                                        <td>
+                                            <span class="badge text-bg-secondary"
+                                                  th:text="${product.category.name}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="badge text-bg-secondary"
+                                                  th:text="${product.brand.name}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="badge text-bg-secondary"
+                                                  th:text="${product.series.name}"></span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{'/admin-product/updateStatus' + ${product.id} + '/' + ${!product.active}}"
+                                               th:class="${product.active ? 'badge badge-success' : 'badge badge-danger'}">
+                                                <i class="fa"
+                                                   th:classappend="${product.active ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                                                <span th:text="${product.active ? 'Enabled' : 'Disabled'}"></span>
+                                            </a>
+                                        </td>
+
+
+                                        <td style="display: contents;">
+                                            <div class="form-button-action">
+                                                <button type="button" data-toggle="tooltip" title="Edit"
+                                                        class="btn btn-link btn-primary btn-lg btn-sm"
+                                                        data-original-title="Edit Task">
+                                                    <a th:href="@{/admin-product/editProduct{id}(id=${product.id})}"
+                                                       class="btn btn-primary"><i class="fa fa-edit"></i></a>
+                                                </button>
+                                                <button type="button" data-toggle="tooltip" title="Delete"
+                                                        class="btn btn-link btn-danger btn-sm ml-1 btn-delete"
+                                                        data-original-title="Remove">
+                                                    <a th:href="@{/admin-product/deleteProduct/{id}(id=${product.id})}"
+                                                       class="btn btn-delete btn-danger">
+                                                        <i class="fa fa-times action-delete"></i>
+                                                    </a>
+
+                                                </button>
+
+                                                <!--                                                <button type="button" class="btn btn-danger btn-round ml-auto" data-toggle="modal"-->
+                                                <!--                                                        data-target="#modal-confirm-delete">-->
+                                                <!--                                                    <i class="fa fa-times action-delete"></i>-->
+                                                <!--                                                </button>-->
+
+                                                <!--                                                        <button type="button" data-toggle="tooltip"-->
+                                                <!--                                                                data-original-title="Remove" class="btn btn-danger deleteCategoryBtn"-->
+                                                <!--                                                                id="" th:data="${product.getId()}">-->
+                                                <!--                                                            Delete-->
+                                                <!--                                                        </button>-->
+                                                <!--                                                        <a onclick="return confirm('Are you sure you want to delete this product?')"-->
+                                                <!--                                                           th:href="@{/admin/product/deleteCategory/{id}(id=${product.id})}"-->
+                                                <!--                                                           class="btn btn-danger" type="">Delete</a>-->
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!--                        PAGINATION-->
+                        <!--                        <div class="row">-->
+                        <!--                            <div class="col-sm-12 col-md-5">-->
+                        <!--                                <div class="dataTables_info" id="add-row_info" role="status"-->
+                        <!--                                     aria-live="polite">-->
+                        <!--                                    Showing 1 to 5 of-->
+                        <!--                                    <data th:text="${totalItems}"></data>-->
+                        <!--                                    entries-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col-sm-12 col-md-7">-->
+                        <!--                                <div class="dataTables_paginate paging_simple_numbers"-->
+                        <!--                                     id="add-row_paginate">-->
+                        <!--                                    <ul class="pagination">-->
+                        <!--                                        <li class="paginate_button page-item" th:if="${currentPage > 2}">-->
+                        <!--                                            <a th:href="@{${keyword != null && !keyword.isEmpty() ? '?keyword=' + keyword + '&pageNum=' + (1): '?pageNum=' + (1)}}"-->
+                        <!--                                               aria-controls="add-row"-->
+                        <!--                                               class="page-link"><i class="fa fa-angle-double-left"></i></a>-->
+                        <!--                                        </li>-->
+                        <!--                                        <li class="paginate_button page-item previous"-->
+                        <!--                                            id="add-row_previous" th:if="${currentPage > 1}">-->
+                        <!--                                            <a th:href="@{${keyword != null && !keyword.isEmpty() ? '?keyword=' + keyword + '&pageNum=' + (currentPage - 1) : '?pageNum=' + (currentPage - 1)}}"-->
+                        <!--                                               aria-controls="add-row"-->
+                        <!--                                               class="page-link"><i class="fa fa-angle-left"></i></a>-->
+                        <!--                                        </li>-->
+                        <!--                                        <li class="paginate_button page-item"-->
+                        <!--                                            th:each="i:${#numbers.sequence(1,totalPages)}"-->
+                        <!--                                            th:classappend="${currentPage==i?'active':' '}">-->
+                        <!--                                            &lt;!&ndash;                                            <a th:href="@{'?pageNum='+${i}}" class="page-link" th:text="${i}"></a>&ndash;&gt;-->
+                        <!--                                            <a th:if="${currentPage != i}"-->
+                        <!--                                               th:href="@{${keyword != null && !keyword.isEmpty() ? '?keyword=' + keyword + '&pageNum=' + i : '?pageNum=' + i}}"-->
+                        <!--                                               class="page-link"-->
+                        <!--                                               th:text="${i}"></a>-->
+                        <!--                                            <span th:if="${currentPage == i}" class="page-link" th:text="${i}"></span>-->
+                        <!--                                        </li>-->
+                        <!--                                        &lt;!&ndash;                                        <li class="paginate_button page-item "><a href="#"&ndash;&gt;-->
+                        <!--                                        &lt;!&ndash;                                                                                  aria-controls="add-row"&ndash;&gt;-->
+                        <!--                                        &lt;!&ndash;                                                                                  data-dt-idx="2"&ndash;&gt;-->
+                        <!--                                        &lt;!&ndash;                                                                                  tabindex="0"&ndash;&gt;-->
+                        <!--                                        &lt;!&ndash;                                                                                  class="page-link">2</a>&ndash;&gt;-->
+                        <!--                                        &lt;!&ndash;                                        </li>&ndash;&gt;-->
+                        <!--                                        <li class="paginate_button page-item next" id="add-row_next"-->
+                        <!--                                            th:if="${currentPage != totalPages}">-->
+                        <!--                                            <a th:href="@{${keyword != null && !keyword.isEmpty() ? '?keyword=' + keyword + '&pageNum=' + (currentPage+1): '?pageNum=' + (currentPage+1)}}"-->
+                        <!--                                               aria-controls="add-row"-->
+                        <!--                                               tabindex="0"-->
+                        <!--                                               class="page-link"><i class="fa fa-angle-right"></i></a>-->
+                        <!--                                        </li>-->
+                        <!--                                        <li class="paginate_button page-item"-->
+                        <!--                                            th:if="${currentPage >= 1 && currentPage < (totalPages - 1)}">-->
+                        <!--                                            <a th:href="@{${keyword != null && !keyword.isEmpty() ? '?keyword=' + keyword + '&pageNum=' + totalPages: '?pageNum=' + totalPages}}"-->
+                        <!--                                               aria-controls="add-row"-->
+                        <!--                                               class="page-link"><i class="fa fa-angle-double-right"></i></a>-->
+                        <!--                                        </li>-->
+                        <!--                                    </ul>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                        <!--                        END PAGINATION-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/common_form.js}"></script>
+
+<script>
+    // Delete function for delete button
+
+</script>
+
+
+</body>
+</html>

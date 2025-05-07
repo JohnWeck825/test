@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/fragments/layout-without-pagination}">
+<head th:replace="admin/fragments/head :: head('Error')"></head>
+<body>
+<div class="container mt-5">
+    <div class="alert alert-danger text-center">
+        <h2>Something went wrong!</h2>
+        <p th:text="${errorMessage}"></p>
+        <button class="btn btn-primary mt-3" onclick="history.back()">Go Back</button>
+    </div>
+</div>
+</body>
+</html>

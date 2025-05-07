@@ -1,0 +1,191 @@
+<div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true" th:fragment="addCategoryForm"
+     xmlns:th="http://www.thymeleaf.org">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header no-bd">
+                <h5 class="modal-title">
+                    <span class="fw-mediumbold">New</span>
+                    <span class="fw-light">Category</span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="small">Create a new category using this form, make sure you fill them
+                    all</p>
+                <form id="addCategoryForm" th:object="${category}" method="post"
+                      th:action="@{/admin-category/save}" enctype="multipart/form-data">
+                    <input type="hidden" th:field="*{id}">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group form-group-default">
+                                <label for="categoryName">Name</label>
+                                <input id="categoryName" type="text" class="form-control"
+                                       placeholder="fill category name" name="categoryName"
+                                       th:field="*{name}" required="required">
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group form-group-default">
+                                <label for="categorySlug">Slug</label>
+                                <input id="categorySlug" type="text" class="form-control"
+                                       placeholder="fill category slug" name="categorySlug"
+                                       th:field="*{slug}" required="required">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check form-group form-group-default">
+                                <label>Status</label>
+                                <div class="form-check-inline">
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio"
+                                               name="categoryStatus" value="1" checked=""
+                                               th:field="*{active}">
+                                        <span class="form-radio-sign">Enable</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio"
+                                               name="categoryStatus" value="0"
+                                               th:field="*{active}">
+                                        <span class="form-radio-sign">Disable</span>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group form-group-default">
+                                <label for="formGroupDefaultSelect">Select</label>
+                                <select class="form-control" id="formGroupDefaultSelect"
+                                        th:field="*{parent}">
+                                    <option value="">Parent Category</option>
+                                    <option th:each="parentCategory : ${categoryInForm}"
+                                            th:value="${parentCategory.id}"
+                                            th:text="${parentCategory.id} + ' - ' + ${parentCategory.name}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group form-group-default">
+                                <div style="margin-bottom: 6px">
+                                    <input th:field="*{photoUrl}" type="hidden">
+                                    <label for="imageFile">Category Image</label>
+                                    <input type="file" class="form-control-file"
+                                           id="imageFile" th:name="imageFile">
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer no-bd">
+                <button type="submit" form="addCategoryForm" id="addRowButton"
+                        class="btn btn-primary">Add
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<div th:replace="admin/fragments/modal :: modal_notify" xmlns:th="http://www.thymeleaf.org"></div>-->
+
+<!-- Modal Notify -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" aria-hidden="true" class="close" data-dismiss="modal" style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button>
+            </div>
+            <div class="modal-body">
+                <span id="errorMessage"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!--<script>-->
+<!--    var contextPath = "[[@{/}]]";-->
+<!--    var currentUrl = "[[@{/admin-category}]]";-->
+<!--    var csrfValue = "[[${_csrf.token}]]";-->
+
+<!--    function checkNameAndSlug(form) {-->
+<!--        url = contextPath + "admin-category/check-name-and-slug";-->
+<!--        categoryId = $('#id').val();-->
+<!--        categoryName = $('#categoryName').val();-->
+<!--        categorySlug = $('#categorySlug').val();-->
+<!--        params = {id: categoryId, name: categoryName, slug: categorySlug, _csrf: csrfValue};-->
+
+<!--        $.post(url, params, function (message) {-->
+<!--            if (message == "OK") {-->
+<!--                form.submit();-->
+<!--            } else if (message == "Category name exists") {-->
+<!--                showModalNotify("Duplicate name", "Category's name has been used. Please choose another name");-->
+<!--            } else if (message == "Category slug exists") {-->
+<!--                showModalNotify("Duplicate slug", "Category's slug has been used. Please choose another slug");-->
+<!--            } else {-->
+<!--                showModalNotify("Duplicate name and slug", "Category's name and slug has been used. Please choose another name and slug");-->
+<!--            }-->
+<!--        }).fail(function () {-->
+<!--            showModalNotify("Error", "Something went wrong. Please try again");-->
+<!--        });-->
+<!--        return false;-->
+<!--    }-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    $(document).ready(function () {-->
+<!--        const form = $("#addCategoryForm"); // Đảm bảo chỉ lấy đúng form edit-->
+
+<!--        form.on("submit", function (event) {-->
+<!--            event.preventDefault(); // Ngăn chặn gửi form mặc định-->
+
+<!--            // Lấy giá trị của name, slug và id-->
+<!--            const name = $("input[name='name']").val();-->
+<!--            const slug = $("input[name='slug']").val();-->
+<!--            const categoryId = $("input[name='id']").val();-->
+<!--            // if(categoryId == null) categoryId = 0;-->
+<!--            // const idToSend = categoryId ? categoryId : null;-->
+
+<!--            let data = {name: name, slug: slug};-->
+<!--            // if (categoryId !== "") {-->
+<!--            //     data.id = categoryId;-->
+<!--            // }-->
+
+<!--            // Gửi yêu cầu AJAX để kiểm tra tên và slug-->
+<!--            $.ajax({-->
+<!--                url: `/admin-category/check-name-and-slug-in-add-form`,-->
+<!--                type: "POST",-->
+<!--                // data: {id: categoryId, name: name, slug: slug },-->
+<!--                data: data,-->
+<!--                success: function (response) {-->
+<!--                    if (response !== "OK") {-->
+<!--                        // Nếu có lỗi, hiển thị modal thông báo-->
+<!--                        $("#errorMessage").text(response);-->
+<!--                        $("#errorModal").modal("show");-->
+<!--                    } else {-->
+<!--                        // Nếu không có lỗi, gửi form bình thường-->
+<!--                        form.off("submit"); // Bỏ sự kiện chặn submit-->
+<!--                        form.submit(); // Gửi form-->
+<!--                    }-->
+<!--                },-->
+<!--                error: function () {-->
+<!--                    alert("Có lỗi xảy ra trong quá trình kiểm tra. Vui lòng thử lại.");-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->

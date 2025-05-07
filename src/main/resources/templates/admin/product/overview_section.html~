@@ -1,0 +1,310 @@
+<div th:fragment="content" class="container mt-3" xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+    <!-- Name -->
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name</label>
+        <input id="Name" type="text" class="form-control" required="required"
+               placeholder="Eg: Acer Aspire 5" th:field="*{name}">
+    </div>
+
+    <!-- Slug -->
+    <div class="mb-3">
+        <label for="categorySlug" class="form-label">Slug</label>
+        <input id="categorySlug" type="text" class="form-control" required="required"
+               placeholder="Eg: acer-aspire-5" th:field="*{slug}">
+    </div>
+
+    <input type="hidden" id="isEditMode" th:value="${product.id != null ? 'true' : 'false'}">
+
+    <!-- Product Category -->
+    <div class="mb-3">
+        <label class="form-label" for="productCategory">Product Category</label>
+        <!--                                <label>-->
+        <select th:field="*{category}" class="form-control" id="productCategory" onchange="loadBrands(this.value)">
+            <option value="">None</option>
+            <option th:each="productCategory : ${categories}"
+                    th:value="${productCategory.id}"
+                    th:text="${productCategory.name}"></option>
+        </select>
+        <!--                                </label>-->
+    </div>
+
+    <!-- Product's Brand -->
+    <div class="mb-3">
+        <label class="form-label" for="productBrand">Product's Brand</label>
+        <!--                                <label>-->
+        <select th:field="*{brand}" class="form-control" id="productBrand"
+                th:data-selected-value="${product.brand != null ? product.brand.id : ''}"
+                required="required" onchange="loadSeries(this.value)">
+            <option value="">None</option>
+            <!--            <option th:each="brand : ${brands}"-->
+            <!--                    th:value="${brand.id}"-->
+            <!--                    th:text="${brand.name}"></option>-->
+        </select>
+        <!--                                </label>-->
+    </div>
+
+    <!-- Product's Series -->
+    <div class="mb-3">
+        <label class="form-label" for="productSeries">Product's Series</label>
+        <!--                                <label>-->
+        <select th:field="*{series}" class="form-control" id="productSeries"
+                required="required" th:data-selected-value="${product.series != null ? product.series.id : ''}">
+            <option value="">None</option>
+<!--                        <option th:each="productSeries : ${series}"-->
+<!--                                th:value="${productSeries.id}"-->
+<!--                                th:text="${productSeries.name}"></option>-->
+        </select>
+        <!--                                </label>-->
+    </div>
+
+    <!-- Status -->
+    <div class="mb-3">
+        <label class="form-label d-block mb-2">Status</label>
+        <div class="btn-group w-100" role="group" aria-label="Status selection">
+            <input class="btn-check" type="radio" autocomplete="off"
+                   th:field="*{active}" value="1" id="statusEnable">
+            <label class="form-check-label" for="statusEnable">Enable</label>
+
+            <input class="btn btn-outline-danger" type="radio" autocomplete="off"
+                   th:field="*{active}" value="0" id="statusDisable">
+            <label class="form-check-label" for="statusDisable">Disable</label>
+        </div>
+    </div>
+
+    <!--    Price-->
+    <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input id="price" type="number" class="form-control" required="required"
+               placeholder="Eg: 1000" th:field="*{price}">
+    </div>
+
+    <!--    List Price-->
+    <div class="mb-3">
+        <label for="listPrice" class="form-label">List Price - MSRP</label>
+        <input id="listPrice" type="number" class="form-control" required="required"
+               placeholder="Eg: 1200" th:field="*{listPrice}">
+    </div>
+
+    <!--    Discount-->
+    <div class="mb-3">
+        <label for="discount" class="form-label">Discount</label>
+        <input id="discount" type="number" class="form-control" required="required"
+               placeholder="Eg: 10" th:field="*{discount}">
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const isEditMode = document.getElementById("isEditMode");
+            const categoryDropdown = document.getElementById("productCategory");
+            const brandDropdown = document.getElementById("productBrand");
+            const seriesDropdown = document.getElementById("productSeries");
+
+            // Chế độ Edit: Load Brand và Series khi form được tải
+            if (isEditMode) {
+                const selectedCategory = categoryDropdown.value;
+                const selectedBrand = brandDropdown.getAttribute("data-selected-value");
+                const selectedSeries = seriesDropdown.getAttribute("data-selected-value");
+
+                if (selectedCategory) {
+                    loadBrands(selectedCategory, selectedBrand, selectedSeries);
+                }
+            }
+        });
+
+        function loadBrands(categoryId, selectedBrandId, selectedSeriesId) {
+            // if (categoryId){
+            //     fetch(`/admin-product/brands?categoryId=${categoryId}`)
+            //         .then(response => response.json())
+            //         .then(data =>{
+            //             const brandDropDown = document.getElementById("productBrand");
+            //             brandDropDown.innerHTML = '<option value="">None</option>';
+            //             data.forEach(brand =>{
+            //                 brandDropDown.innerHTML += `<option value="${brand.id}">${brand.name}</option>`;
+            //             });
+            //             document.getElementById(`productSeries`).innerHTML = '<option value="">None</option>'; // Reset series dropdown
+            //         });
+            // }
+
+            // console.log("selected")
+
+            // const isEditMode = document.getElementById("isEditMode");
+            const brandDropDown = document.getElementById("productBrand");
+            const seriesDropDown = document.getElementById("productSeries");
+
+            // if (isEditMode) {
+            //     console.log("Edit mode - Skipping brand reset");
+            //     return;
+            // }
+
+            // Reset Brand và Series Dropdown
+            brandDropDown.innerHTML = '<option value="">None</option>';
+            seriesDropDown.innerHTML = '<option value="">None</option>';
+            var csrfToken = document.cookie.split('; ').find(row => row.startsWith('_csrf')).split('=')[1];
+
+            if (categoryId) {
+                fetch(`/admin-product/brands?categoryId=${categoryId}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'CSRF-Token': csrfToken
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch brands');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Thêm các brand vào dropdown
+                        data.forEach(brand => {
+                            const option = document.createElement("option");
+                            option.value = brand.id;
+                            option.textContent = brand.name;
+                            if (brand.id == selectedBrandId) option.selected = true;
+                            brandDropDown.appendChild(option);
+                        });
+                        // Nếu Brand đã được chọn, tải Series
+                        if (selectedBrandId) {
+                            loadSeries(selectedBrandId, selectedSeriesId);
+                        }
+                    })
+                    .catch(error => console.error("Error loading brands:", error));
+            }
+        }
+
+        function loadSeries(brandId, selectedSeriesId) {
+            // if (brandId){
+            //     fetch(`/admin-product/series?brandId=${brandId}`)
+            //         .then(response => response.json())
+            //         .then(data =>{
+            //             const seriesDropDown = document.getElementById("productSeries");
+            //             seriesDropDown.innerHTML = '<option value="">None</option>';
+            //             data.forEach(series =>{
+            //                 seriesDropDown.innerHTML += `<option value="${series.id}">${series.name}</option>`;
+            //             });
+            //         });
+            // }
+
+            // const isEditMode = document.getElementById("isEditMode");
+            const seriesDropDown = document.getElementById("productSeries");
+
+            // if (isEditMode) {
+            //     console.log("Edit mode - Skipping series reset.");
+            //     return;
+            // }
+
+            // Reset Series Dropdown
+            seriesDropDown.innerHTML = '<option value="">None</option>';
+
+            if (brandId) {
+                fetch(`/admin-product/series?brandId=${brandId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch series');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Thêm các series vào dropdown
+                        data.forEach(series => {
+                            const option = document.createElement("option");
+                            option.value = series.id;
+                            option.textContent = series.name;
+                            if (series.id == selectedSeriesId) option.selected = true;
+                            seriesDropDown.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error loading series:", error));
+            }
+        }
+    </script>
+
+</div>
+
+<!--<script>-->
+<!--    function loadBrands(categoryId) {-->
+<!--        // if (categoryId){-->
+<!--        //     fetch(`/admin-product/brands?categoryId=${categoryId}`)-->
+<!--        //         .then(response => response.json())-->
+<!--        //         .then(data =>{-->
+<!--        //             const brandDropDown = document.getElementById("productBrand");-->
+<!--        //             brandDropDown.innerHTML = '<option value="">None</option>';-->
+<!--        //             data.forEach(brand =>{-->
+<!--        //                 brandDropDown.innerHTML += `<option value="${brand.id}">${brand.name}</option>`;-->
+<!--        //             });-->
+<!--        //             document.getElementById(`productSeries`).innerHTML = '<option value="">None</option>'; // Reset series dropdown-->
+<!--        //         });-->
+<!--        // }-->
+
+<!--        console.log("selected")-->
+
+<!--        const brandDropDown = document.getElementById("productBrand");-->
+<!--        const seriesDropDown = document.getElementById("productSeries");-->
+
+<!--        // Reset Brand và Series Dropdown-->
+<!--        brandDropDown.innerHTML = '<option value="">None</option>';-->
+<!--        seriesDropDown.innerHTML = '<option value="">None</option>';-->
+
+<!--        if (categoryId) {-->
+<!--            fetch(`/admin-product/brands?categoryId=${categoryId}`)-->
+<!--                .then(response => {-->
+<!--                    if (!response.ok) {-->
+<!--                        throw new Error('Failed to fetch brands');-->
+<!--                    }-->
+<!--                    return response.json();-->
+<!--                })-->
+<!--                .then(data => {-->
+<!--                    // Thêm các brand vào dropdown-->
+<!--                    data.forEach(brand => {-->
+<!--                        const option = document.createElement("option");-->
+<!--                        option.value = brand.id;-->
+<!--                        option.textContent = brand.name;-->
+<!--                        brandDropDown.appendChild(option);-->
+<!--                    });-->
+<!--                })-->
+<!--                .catch(error => console.error("Error loading brands:", error));-->
+<!--        }-->
+<!--    }-->
+
+<!--    function loadSeries(brandId) {-->
+<!--        // if (brandId){-->
+<!--        //     fetch(`/admin-product/series?brandId=${brandId}`)-->
+<!--        //         .then(response => response.json())-->
+<!--        //         .then(data =>{-->
+<!--        //             const seriesDropDown = document.getElementById("productSeries");-->
+<!--        //             seriesDropDown.innerHTML = '<option value="">None</option>';-->
+<!--        //             data.forEach(series =>{-->
+<!--        //                 seriesDropDown.innerHTML += `<option value="${series.id}">${series.name}</option>`;-->
+<!--        //             });-->
+<!--        //         });-->
+<!--        // }-->
+
+<!--        const seriesDropDown = document.getElementById("productSeries");-->
+
+<!--        // Reset Series Dropdown-->
+<!--        seriesDropDown.innerHTML = '<option value="">None</option>';-->
+
+<!--        if (brandId) {-->
+<!--            fetch(`/admin-product/series?brandId=${brandId}`)-->
+<!--                .then(response => {-->
+<!--                    if (!response.ok) {-->
+<!--                        throw new Error('Failed to fetch series');-->
+<!--                    }-->
+<!--                    return response.json();-->
+<!--                })-->
+<!--                .then(data => {-->
+<!--                    // Thêm các series vào dropdown-->
+<!--                    data.forEach(series => {-->
+<!--                        const option = document.createElement("option");-->
+<!--                        option.value = series.id;-->
+<!--                        option.textContent = series.name;-->
+<!--                        seriesDropDown.appendChild(option);-->
+<!--                    });-->
+<!--                })-->
+<!--                .catch(error => console.error("Error loading series:", error));-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->

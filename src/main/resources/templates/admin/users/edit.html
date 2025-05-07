@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/fragments/layout-without-pagination}">
+<head th:replace="admin/fragments/head :: head('User management')">
+    <style>
+        .img_thumb-container {
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .img-thumb {
+            object-fit: cover;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+    </style>
+</head>
+<body data-background-color="dark">
+
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card rounded shadow">
+                    <div class="card-header bg-primary text-white rounded-top">
+                        <h4 class="card-title mb-0">Edit User</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form th:action="@{/admin-user/save}" th:object="${user}"
+                              method="post" enctype="multipart/form-data"
+                              id="addUserForm">
+
+                            <input type="hidden" id="_csrfToken" th:name="${_csrf.parameterName}"
+                                   th:value="${_csrf.token}"/>
+
+                            <input type="hidden" th:field="*{id}">
+
+                            <!-- User Name -->
+                            <div class="mb-3">
+                                <label for="userName" class="form-label">User Name</label>
+                                <input id="userName" type="text" class="form-control" required="required"
+                                       placeholder="Enter category name" th:field="*{userName}">
+                            </div>
+
+                            <!-- First Name -->
+                            <div class="mb-3">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input id="firstName" type="text" class="form-control" required="required"
+                                       placeholder="Eg: John" th:field="*{firstName}">
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="mb-3">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input id="lastName" type="text" class="form-control" required="required"
+                                       placeholder="Eg: Doe" th:field="*{lastName}">
+                            </div>
+
+                            <!-- User Email -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label">User Email</label>
+                                <input id="email" type="email" class="form-control" required="required"
+                                       placeholder="Enter category name" th:field="*{email}">
+                            </div>
+
+                            <!-- User Password -->
+                            <div class="mb-3">
+                                <label for="password" class="form-label">User Password</label>
+                                <div class="input-group">
+                                    <input id="password" type="password" class="form-control"
+                                           placeholder="Enter password" th:field="*{password}">
+                                    <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- User Role -->
+                            <!--                            <div class="mb-3">-->
+                            <!--                                <label for="userRolesId" class="form-label d-block mb-2">User Role</label>-->
+                            <!--                                <select id="userRolesId" name="userRolesId" class="form-control" multiple="multiple"-->
+                            <!--                                        size="5">-->
+                            <!--                                    <option value="">None</option>-->
+                            <!--                                    <option th:each="role : ${roles}"-->
+                            <!--                                            th:value="${role.id}"-->
+                            <!--                                            th:text="${role.name + ' - ' + role.description}"-->
+                            <!--                                            th:selected="${userRoles.contains(role)}"></option>-->
+                            <!--                                </select>-->
+
+                            <!--                                &lt;!&ndash;                                <label>Roles</label>&ndash;&gt;-->
+                            <!--                                &lt;!&ndash;                                <div th:each="role : ${roles}">&ndash;&gt;-->
+                            <!--                                &lt;!&ndash;                                    <input type="checkbox" th:id="${'role-' + role.id}" th:name="roles"&ndash;&gt;-->
+                            <!--                                &lt;!&ndash;                                           th:value="${role.id}" />&ndash;&gt;-->
+                            <!--                                &lt;!&ndash;                                    <label th:for="${'role-' + role.id}" th:text="${role.name}"></label>&ndash;&gt;-->
+                            <!--                                &lt;!&ndash;                                </div>&ndash;&gt;-->
+                            <!--                            </div>-->
+                            <div id="rolesContainer" class="mb-3">
+                                <div>
+                                    <input type="checkbox" id="noneRole" name="userRolesId" value=""
+                                           th:checked="${userRoles.isEmpty()}">
+                                    <label for="noneRole">None</label>
+                                </div>
+                                <div th:each="role : ${roles}">
+                                    <input type="checkbox" id="role_${role.id}" name="userRolesId"
+                                           th:value="${role.id}"
+                                           th:checked="${userRoles.contains(role)}">
+                                    <label th:for="${'role_' + role.id}"
+                                           th:text="${role.name + ' - ' + role.description}"></label>
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="mb-3">
+                                <label class="form-label d-block mb-2">Status</label>
+                                <div class="btn-group w-100" role="group" aria-label="Status selection">
+                                    <input class="btn-check" type="radio" autocomplete="off"
+                                           th:field="*{enabled}" value="1" id="statusEnable">
+                                    <label class="form-check-label" for="statusEnable">Enable</label>
+
+                                    <input class="btn btn-outline-danger" type="radio" autocomplete="off"
+                                           th:field="*{enabled}" value="0" id="statusDisable">
+                                    <label class="form-check-label" for="statusDisable">Disable</label>
+                                </div>
+                            </div>
+
+                            <!-- Image Upload -->
+                            <div class="mb-3">
+                                <input th:field="*{photoUrl}" type="hidden">
+                                <label for="imageFile" class="form-label">User Avatar</label>
+                                <input type="file" class="form-control" id="imageFile" name="imageFile">
+                            </div>
+
+                            <!-- Display Uploaded Image -->
+                            <div class="mb-3 text-center">
+                                <div class="img_thumb-container rounded border p-2">
+                                    <img th:src="${user.photoUrl}" alt="User Logo"
+                                         class="img-thumb img-fluid rounded" style="max-height: 150px;">
+                                </div>
+                            </div>
+
+                            <!--                            <div class="mb-3 text-center">-->
+                            <!--                                <div class="img_thumb-container p-2 border border-3 rounded-3 shadow-lg d-inline-block"-->
+                            <!--                                     style="border-color: #ddd; max-width: 100%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">-->
+                            <!--                                    <img th:src="${user.logo}" alt="Category Image"-->
+                            <!--                                         class="img-thumb img-fluid rounded-3"-->
+                            <!--                                         style="max-height: 150px; max-width: 100%; border: 5px solid #fff;">-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+
+                            <!--                            <div class="mb-4">-->
+                            <!--                                <label class="form-label d-block mb-2">User Logo Preview</label>-->
+                            <!--                                <div class="image-preview-container mx-auto" style="max-width: 200px;">-->
+                            <!--                                    <div class="ratio ratio-1x1 rounded-circle overflow-hidden border border-3 border-primary shadow-lg">-->
+                            <!--                                        <div class="d-flex rounded align-items-center justify-content-center bg-light p-2">-->
+                            <!--                                            <img th:src="${user.logo}" alt="Category Image"-->
+                            <!--                                                 class="img-fluid object-fit-cover rounded"-->
+                            <!--                                                 style="min-height: 100%; min-width: 100%;">-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+
+                            <div class="mb-3 d-flex justify-content-between">
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-success me-2">Update</button>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a
+                                            th:href="@{/admin-user}" class="text-white"
+                                            style="text-decoration: none">Back</a>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Notify -->
+    <div th:replace="admin/fragments/modal :: modal_error"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectElement = document.getElementById("userRolesId");
+            const noneOption = document.getElementById("noneOption");
+
+            selectElement.addEventListener("change", function (event) {
+                const selectedOptions = Array.from(selectElement.options)
+                    .filter(option => option.selected);
+
+                // Kiểm tra nếu "None" được chọn
+                if (noneOption.selected) {
+                    // Bỏ chọn tất cả các lựa chọn khác trừ "None"
+                    Array.from(selectElement.options).forEach(option => {
+                        if (option !== noneOption) {
+                            option.selected = false;
+                        }
+                    });
+                } else {
+                    // Nếu bất kỳ lựa chọn nào khác được chọn, bỏ chọn "None"
+                    noneOption.selected = false;
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const noneCheckbox = document.getElementById("noneRole");
+            const roleCheckboxes = document.querySelectorAll("#rolesContainer input[type='checkbox']:not(#noneRole)");
+
+            // Khi chọn hoặc bỏ chọn "None"
+            noneCheckbox.addEventListener("change", function () {
+                if (noneCheckbox.checked) {
+                    // Nếu "None" được chọn, bỏ chọn tất cả các checkbox khác
+                    roleCheckboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                }
+            });
+
+            // Khi chọn hoặc bỏ chọn các checkbox khác
+            roleCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", function () {
+                    if (checkbox.checked) {
+                        // Nếu chọn một checkbox khác, bỏ chọn "None"
+                        noneCheckbox.checked = false;
+                    }
+                });
+            });
+        });
+
+
+    </script>
+
+<!--    <script>-->
+<!--        $(document).ready(function () {-->
+<!--            const form = $("#addUserForm"); // Đảm bảo chỉ lấy đúng form edit-->
+<!--            const csrfToken = $("input[name='_csrf']").val();-->
+<!--            // const csrfToken = $('#_csrfToken').val();-->
+
+<!--            form.on("submit", function (event) {-->
+<!--                event.preventDefault(); // Ngăn chặn gửi form mặc định-->
+
+<!--                // Lấy giá trị của name, slug và id-->
+<!--                const username = $("input[name='userName']").val();-->
+<!--                // const username = $('#userName').val();-->
+<!--                const email = $("input[name='email']").val();-->
+<!--                const userId = $("input[name='id']").val();-->
+
+<!--                // Gửi yêu cầu AJAX để kiểm tra tên và slug-->
+<!--                $.ajax({-->
+<!--                    url: `/admin-user/editUser${userId}/check-unique-edit-form`,-->
+<!--                    type: "POST",-->
+<!--                    contentType: "application/json",-->
+<!--                    data: JSON.stringify({name: username, email: email}),-->
+<!--                    headers: {"X-CSRF-TOKEN": csrfToken},-->
+<!--                    beforeSend: function (xhr) {-->
+<!--                        xhr.setRequestHeader("X-XSRF-TOKEN", csrfToken);-->
+<!--                    },-->
+<!--                    success: function (response) {-->
+<!--                        if (response !== "OK") {-->
+<!--                            // Nếu có lỗi, hiển thị modal thông báo-->
+<!--                            $("#errorMessage").text(response);-->
+<!--                            $("#errorModal").modal("show");-->
+<!--                        } else {-->
+<!--                            // Nếu không có lỗi, gửi form bình thường-->
+<!--                            form.off("submit"); // Bỏ sự kiện chặn submit-->
+<!--                            form.submit(); // Gửi form-->
+<!--                        }-->
+<!--                    },-->
+<!--                    error: function () {-->
+<!--                        alert("Có lỗi xảy ra trong quá trình kiểm tra. Vui lòng thử lại.");-->
+<!--                    }-->
+<!--                });-->
+<!--            });-->
+<!--        });-->
+
+<!--        $('#modalCloseBtn, #modalCloseBtnFooter').on().click(function () {-->
+<!--            $('#errorModal').modal('hide');-->
+<!--        })-->
+<!--    </script>-->
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<div class="modal fade" id="editRowModal" tabindex="-1" role="dialog" aria-hidden="true" th:fragment="editCategoryForm"
+     xmlns:th="http://www.thymeleaf.org">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header no-bd">
+                <h5 class="modal-title">
+														<span class="fw-mediumbold">
+														New</span>
+                    <span class="fw-light">
+															Row
+														</span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="small">Create a new category using this form, make sure you fill them
+                    all</p>
+                <form id="addCategoryForm" th:object="${category}" method="post"
+                      th:action="@{/admin/category/addCategory}">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group form-group-default">
+                                <label for="categoryName">Name</label>
+                                <input id="categoryName" type="text" class="form-control"
+                                       placeholder="fill category name" name="categoryName"
+                                       th:field="*{name}">
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group form-group-default">
+                                <label for="categorySlug">Slug</label>
+                                <input id="categorySlug" type="text" class="form-control"
+                                       placeholder="fill category slug" name="categorySlug"
+                                       th:field="*{slug}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check form-group form-group-default">
+                                <label>Status</label>
+                                <div class="form-check-inline">
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio"
+                                               name="categoryStatus" value="1" checked=""
+                                               th:field="*{active}">
+                                        <span class="form-radio-sign">Enable</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio"
+                                               name="categoryStatus" value="0"
+                                               th:field="*{active}">
+                                        <span class="form-radio-sign">Disable</span>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group form-group-default">
+                                <label for="formGroupDefaultSelect">Select</label>
+                                <select class="form-control" id="formGroupDefaultSelect"
+                                        th:field="*{parent}">
+                                    <option value="">Parent Category</option>
+                                    <option th:each="parentCategory : ${categories}"
+                                            th:value="${parentCategory.id}"
+                                            th:text="${parentCategory.id} + ' - ' + ${parentCategory.name}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group form-group-default">
+                                <div style="margin-bottom: 6px">
+                                    <label for="exampleFormControlFile1">Category Image</label>
+                                    <input type="file" class="form-control-file"
+                                           id="exampleFormControlFile1">
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer no-bd">
+                <button type="submit" form="addCategoryForm" id="addRowButton"
+                        class="btn btn-primary">Add
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

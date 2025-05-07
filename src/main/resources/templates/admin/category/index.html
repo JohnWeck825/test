@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{admin/fragments/layout}">
+<head th:replace="admin/fragments/head :: head('Category management')"></head>
+<body data-background-color="dark">
+
+<div layout:fragment="content">
+    <div class="page-inner">
+        <!--        <div class="mt-2 mb-4">-->
+        <!--            <h2 class="text-white pb-2">Welcome back, Hizrian!</h2>-->
+        <!--            <h5 class="text-white op-7 mb-4">Yesterday I was clever, so I wanted to change the world. Today I am-->
+        <!--                wise, so I am changing myself.</h5>-->
+        <!--        </div>-->
+
+    </div>
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="notify-box">
+                <div th:if="${errorMessage != null && errorMessage != 'OK'}" id="errorModal"
+                     class="alert alert-danger text-center text-bold"
+                     role="alert" style="color: #0A0B11"><i class="fa fa-exclamation-triangle"></i> [[${errorMessage}]]
+                </div>
+                <div th:if="${message != null}" id="successModal" class="alert alert-success text-center"
+                     role="alert" style="color: #0A0B11"><i class="fa fa-check"></i> [[${message}]]
+                </div>
+                <!--                <div th:if="${message}" class="alert" th:class="${alertClass}" role="alert">-->
+                <!--                    <span th:text="${message}"></span>-->
+                <!--                </div>-->
+                <!--                <div id="message" th:text="${message}" style="display: none;"></div>-->
+
+                <!--                <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">-->
+                <!--                    <div class="modal-dialog">-->
+                <!--                        <div class="modal-content">-->
+                <!--                            <div class="modal-header">-->
+                <!--                                <h5 class="modal-title" id="successModalLabel">Success</h5>-->
+                <!--                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>-->
+                <!--                            </div>-->
+                <!--                            <div class="modal-body">-->
+                <!--                                <span id="successMessage"></span>-->
+                <!--                            </div>-->
+                <!--                            <div class="modal-footer">-->
+                <!--                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+
+                <script>
+                    $(document).ready(function () {
+                        // Kiểm tra nếu có thông báo
+                        // var messageElement = $('#message');
+                        // if (messageElement.length && messageElement.text().trim() !== "") {
+                        //     // Cập nhật nội dung thông báo thành công
+                        //     $("#successMessage").text(messageElement.text());
+                        //     $("#successModal").modal("show");
+                        //
+                        //     // Tự động ẩn modal sau 2 giây
+                        //     setTimeout(function () {
+                        //         $("#successModal").modal("hide");
+                        //     }, 2000);
+                        // }
+                        // setTimeout(function () {
+                        //     $("#successModal").modal("hide");
+                        //     $("#errorModal").modal("hide");
+                        // }, 2000);
+
+                        // Existing form submission logic here...
+                    });
+                </script>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex align-items-center">
+                    <div class="custom-box">
+                        <h4 class="card-title">Category</h4>
+                    </div>
+                    <!--                    <button class="btn btn-primary btn-round ml-auto" data-toggle="modal"-->
+                    <!--                            data-target="#addRowModal">-->
+                    <!--                        <i class="fa fa-plus"></i>-->
+                    <!--                        Add Row-->
+                    <!--                    </button>-->
+                    <button class="btn btn-primary btn-round ml-auto btn-link" data-toggle="modal"
+                            data-target="#addRowModal">
+                        <a th:href="@{/admin-category/createCategory}" class="btn btn-primary btn-sm ml-1">
+                            <i class="fa fa-plus"></i> <label>Add Category</label>
+                        </a>
+
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Modal -->
+                <!--                        <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">-->
+                <!--                            <div class="modal-dialog" role="document">-->
+                <!--                                <div class="modal-content">-->
+                <!--                                    <div class="modal-header no-bd">-->
+                <!--                                        <h5 class="modal-title">-->
+                <!--														<span class="fw-mediumbold">-->
+                <!--														New</span>-->
+                <!--                                            <span class="fw-light">-->
+                <!--															Row-->
+                <!--														</span>-->
+                <!--                                        </h5>-->
+                <!--                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+                <!--                                            <span aria-hidden="true">×</span>-->
+                <!--                                        </button>-->
+                <!--                                    </div>-->
+                <!--                                    <div class="modal-body">-->
+                <!--                                        <p class="small">Create a new category using this form, make sure you fill them-->
+                <!--                                            all</p>-->
+                <!--                                        <form id="addCategoryForm" th:object="${category}" method="post"-->
+                <!--                                              th:action="@{/admin/category/addCategory}">-->
+                <!--                                            <div class="row">-->
+                <!--                                                <div class="col-sm-12">-->
+                <!--                                                    <div class="form-group form-group-default">-->
+                <!--                                                        <label for="categoryName">Name</label>-->
+                <!--                                                        <input id="categoryName" type="text" class="form-control"-->
+                <!--                                                               placeholder="fill category name" name="categoryName"-->
+                <!--                                                               th:field="*{name}">-->
+                <!--                                                    </div>-->
+                <!--                                                </div>-->
+                <!--                                                <div class="col-sm-12">-->
+                <!--                                                    <div class="form-group form-group-default">-->
+                <!--                                                        <label for="categorySlug">Slug</label>-->
+                <!--                                                        <input id="categorySlug" type="text" class="form-control"-->
+                <!--                                                               placeholder="fill category slug" name="categorySlug"-->
+                <!--                                                               th:field="*{slug}">-->
+                <!--                                                    </div>-->
+                <!--                                                </div>-->
+                <!--                                                <div class="col-md-6">-->
+                <!--                                                    <div class="form-check form-group form-group-default">-->
+                <!--                                                        <label>Status</label>-->
+                <!--                                                        <div class="form-check-inline">-->
+                <!--                                                            <label class="form-radio-label">-->
+                <!--                                                                <input class="form-radio-input" type="radio"-->
+                <!--                                                                       name="categoryStatus" value="1" checked=""-->
+                <!--                                                                       th:field="*{active}">-->
+                <!--                                                                <span class="form-radio-sign">Enable</span>-->
+                <!--                                                            </label>-->
+                <!--                                                            <label class="form-radio-label ml-3">-->
+                <!--                                                                <input class="form-radio-input" type="radio"-->
+                <!--                                                                       name="categoryStatus" value="0"-->
+                <!--                                                                       th:field="*{active}">-->
+                <!--                                                                <span class="form-radio-sign">Disable</span>-->
+                <!--                                                            </label>-->
+                <!--                                                        </div>-->
+
+                <!--                                                    </div>-->
+                <!--                                                </div>-->
+
+                <!--                                                <div class="col-md-12">-->
+                <!--                                                    <div class="form-group form-group-default">-->
+                <!--                                                        <label for="formGroupDefaultSelect">Select</label>-->
+                <!--                                                        <select class="form-control" id="formGroupDefaultSelect"-->
+                <!--                                                                th:field="*{parent}">-->
+                <!--                                                            <option value="">Parent Category</option>-->
+                <!--                                                            <option th:each="parentCategory : ${categories}"-->
+                <!--                                                                    th:value="${parentCategory.id}"-->
+                <!--                                                                    th:text="${parentCategory.id} + ' - ' + ${parentCategory.name}"></option>-->
+                <!--                                                        </select>-->
+                <!--                                                    </div>-->
+                <!--                                                </div>-->
+
+                <!--                                                <div class="col-md-12">-->
+                <!--                                                    <div class="form-group form-group-default">-->
+                <!--                                                        <div style="margin-bottom: 6px">-->
+                <!--                                                            <label for="exampleFormControlFile1">Category Image</label>-->
+                <!--                                                            <input type="file" class="form-control-file"-->
+                <!--                                                                   id="exampleFormControlFile1">-->
+                <!--                                                        </div>-->
+
+                <!--                                                    </div>-->
+                <!--                                                </div>-->
+
+                <!--                                            </div>-->
+
+                <!--                                        </form>-->
+                <!--                                    </div>-->
+                <!--                                    <div class="modal-footer no-bd">-->
+                <!--                                        <button type="submit" form="addCategoryForm" id="addRowButton"-->
+                <!--                                                class="btn btn-primary">Add-->
+                <!--                                        </button>-->
+                <!--                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close-->
+                <!--                                        </button>-->
+                <!--                                    </div>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                <div th:replace="/admin/category/addCategoryForm :: addCategoryForm"></div>-->
+
+                <!--                <div th:replace="/admin/category/editCategoryForm :: editCategoryForm"></div>-->
+
+                <div class="modal-delete" th:replace="admin/fragments/modal :: modal_option"></div>
+
+                <!--                <div th:replace="admin/fragments/modal :: modal-confirm-delete"></div>-->
+
+                <div class="table-responsive">
+                    <div id="add-row_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <!--                                <div class="dataTables_length" id="add-row_length"><label>Show <select-->
+                                <!--                                        name="add-row_length" aria-controls="add-row"-->
+                                <!--                                        class="form-control form-control-sm">-->
+                                <!--                                    <option value="10">10</option>-->
+                                <!--                                    <option value="25">25</option>-->
+                                <!--                                    <option value="50">50</option>-->
+                                <!--                                    <option value="100">100</option>-->
+                                <!--                                </select> entries</label></div>-->
+                                <form id="entriesForm" method="get" action="/admin-category">
+                                    <div class="dataTables_length" id="add-row_length">
+                                        <form method="get" th:action="@{/admin-category}">
+                                            <label>Show
+                                                <select name="category_per_page" aria-controls="add-row"
+                                                        class="form-control form-control-sm"
+                                                        onchange="this.form.submit()">
+                                                    <option value="5" th:selected="${category_per_page == 5}">5
+                                                    </option>
+                                                    <option value="10" th:selected="${category_per_page == 10}">10
+                                                    </option>
+                                                    <option value="25" th:selected="${category_per_page == 25}">25
+                                                    </option>
+                                                    <option value="50" th:selected="${category_per_page == 50}">50
+                                                    </option>
+                                                    <option value="100" th:selected="${category_per_page == 100}">100
+                                                    </option>
+                                                    <!--                                                    <option th:each="i : ${#numbers.sequence(1, totalItems)}"-->
+                                                    <!--                                                            th:value="${i}" th:text="${i}" -->
+                                                    <!--                                                            th:selected="${category_per_page == i}"></option>-->
+                                                </select> entries
+                                            </label>
+                                        </form>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div id="add-row_filter" class="dataTables_filter">
+                                    <form class="search-wrapper">
+                                        <!--                                    <div class="input-group">-->
+                                        <!--                                        <div class="input-group-prepend">-->
+                                        <!--                                            <button type="submit" class="btn btn-search pr-1">-->
+                                        <!--                                                <i class="fa fa-search search-icon"></i>-->
+                                        <!--                                            </button>-->
+                                        <!--                                        </div>-->
+                                        <!--                                        <input type="text" name="keyword" placeholder="Search ..." class="form-control" th:default="${keyword}">-->
+                                        <!--                                    </div>-->
+
+                                        <label>Search:<input
+                                                type="search" name="keyword" class="form-control form-control-sm"
+                                                placeholder=""
+                                                aria-controls="add-row" th:value="${keyword}">
+                                            <button type="submit" class="rounded-circle">
+
+                                                <i class="fa fa-search search-icon rounded"></i>
+                                            </button>
+                                        </label>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="add-row"
+                                       class="display table table-striped table-hover dataTable"
+                                       role="grid" aria-describedby="add-row_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <th tabindex="0" aria-controls="add-row"
+                                            rowspan="1"
+                                            colspan="1"
+                                            style="width: 5%;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                ID<a
+                                                    th:replace="/admin/fragments/custom :: sort_link(${defaultUrl}, 'id')"
+                                                    class="sort-icon"></a></div>
+                                        </th>
+                                        <th tabindex="0" aria-controls="add-row"
+                                            rowspan="1"
+                                            colspan="1"
+
+                                            style="width: 10%; text-align: match-parent; height: 50px">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                Image
+                                                <!--                                                <a><i class="fa fa-sort"></i></a>-->
+                                            </div>
+                                        </th>
+                                        <th tabindex="0" aria-controls="add-row"
+                                            rowspan="1"
+                                            colspan="1"
+                                            style="width: 25%;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                Name<a
+                                                    th:replace="/admin/fragments/custom :: sort_link(${defaultUrl}, 'name')"
+                                                    class="sort-icon"></a>
+                                            </div>
+                                        </th>
+
+                                        <th tabindex="0" aria-controls="add-row"
+                                            rowspan="1"
+                                            colspan="1"
+                                            style="width: 25%;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                Slug
+                                                <!--                                                <a th:replace="/admin/fragments/custom :: sort_link(${defaultUrl}, 'slug')"-->
+                                                <!--                                                    class="sort-icon"></a>-->
+                                            </div>
+                                        </th>
+                                        <th tabindex="0" aria-controls="add-row" rowspan="1"
+                                            colspan="1"
+                                            style="width: 10%;">Status
+                                        </th>
+                                        <th style="width: 15%; text-align: match-parent"
+                                            tabindex="0"
+                                            aria-controls="add-row" rowspan="1" colspan="2">Action
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th rowspan="1" colspan="1" style="width: 5%">ID</th>
+                                        <th rowspan="1" colspan="1" style="width: 10%">Image</th>
+                                        <th rowspan="1" colspan="1" style="width: 25%">Name</th>
+                                        <th rowspan="1" colspan="1" style="width: 25%">Slug</th>
+                                        <th rowspan="1" colspan="1" style="width: 10%">Status</th>
+                                        <th rowspan="1" colspan="2" style="text-align: match-parent; width: 15%">
+                                            Action
+                                        </th>
+                                    </tr>
+                                    </tfoot>
+                                    <tbody>
+                                    <tr role="row" class="odd" th:each="category, count : ${categories}">
+                                        <!--<td class="sorting_1" th:text="${category.id}"></td>-->
+                                        <td class="sorting_1"
+                                            th:text="${(currentPage - 1) * category_per_page + (count.index + 1)}"></td>
+                                        <td class="sorting_1">
+                                            <div class="image-wrapper">
+                                                <img class="image-container ui-corner-all lazy-load-overlay"
+                                                     style="width: 50px; height: 50px" th:src="${category.photoUrl}">
+                                            </div>
+                                        </td>
+                                        <td class="sorting_1" th:text="${category.name}"></td>
+                                        <td th:text="${category.slug}"></td>
+                                        <!--                                        <td th:if="${category.active}">-->
+                                        <!--                                            <a href="#" class="badge badge-success">-->
+                                        <!--                                                <i class="fa fa-check-circle"></i>-->
+                                        <!--                                                Enabled</a>-->
+                                        <!--                                            <span class="badge badge-success">-->
+                                        <!--                                            <i class="fa fa-exclamation-circle"></i>-->
+                                        <!--                                            Disabled</span>-->
+
+                                        <!--                                        </td>-->
+                                        <!--                                        <td th:unless="${category.active}"><span-->
+                                        <!--                                                class="badge badge-danger">-->
+                                        <!--                                            <i class="fa fa-exclamation-circle"></i>-->
+                                        <!--                                            Disabled</span>-->
+                                        <!--                                        </td>-->
+                                        <td>
+                                            <a th:href="@{'/admin-category/updateStatus' + ${category.id} + '/' + ${!category.active}}"
+                                               th:class="${category.active ? 'badge badge-success' : 'badge badge-danger'}">
+                                                <i class="fa"
+                                                   th:classappend="${category.active ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                                                <span th:text="${category.active ? 'Enabled' : 'Disabled'}"></span>
+                                            </a>
+                                        </td>
+                                        <td style="display: contents;">
+                                            <div class="form-button-action">
+                                                <button type="button" data-toggle="tooltip" title="Edit"
+                                                        class="btn btn-link btn-primary btn-lg btn-sm"
+                                                        data-original-title="Edit Task">
+                                                    <a th:href="@{/admin-category/editCategory{id}(id=${category.id})}"
+                                                       class="btn btn-primary"><i class="fa fa-edit"></i></a>
+                                                </button>
+                                                <button type="button" data-toggle="tooltip" title="Delete"
+                                                        sec:authorize="hasAuthority('Admin')"
+                                                        th:if="${category.hasChildren == false && category.hasBrand == false}"
+                                                        class="btn btn-link btn-danger btn-sm ml-1"
+                                                        data-original-title="Remove">
+                                                    <a th:href="@{/admin-category/deleteCategory/{id}(id=${category.id})}"
+                                                       class="btn btn-delete btn-danger">
+                                                        <i class="fa fa-times action-delete"></i></a>
+                                                </button>
+
+
+                                                <!--                                                <button type="button" class="btn btn-danger btn-round ml-auto" data-toggle="modal"-->
+                                                <!--                                                        data-target="#modal-confirm-delete">-->
+                                                <!--                                                    <i class="fa fa-times action-delete"></i>-->
+                                                <!--                                                </button>-->
+
+                                                <!--                                                        <button type="button" data-toggle="tooltip"-->
+                                                <!--                                                                data-original-title="Remove" class="btn btn-danger deleteCategoryBtn"-->
+                                                <!--                                                                id="" th:data="${category.getId()}">-->
+                                                <!--                                                            Delete-->
+                                                <!--                                                        </button>-->
+                                                <!--                                                        <a onclick="return confirm('Are you sure you want to delete this category?')"-->
+                                                <!--                                                           th:href="@{/admin/category/deleteCategory/{id}(id=${category.id})}"-->
+                                                <!--                                                           class="btn btn-danger" type="">Delete</a>-->
+                                            </div>
+                                        </td>
+
+                                        <!--                                        Modal-->
+                                        <!--                                        <div th:replace="/admin/fragments/modal :: modal-confirm-delete"></div>-->
+                                    </tr>
+                                    <!--                                            <tr th:each="category : ${categories}">-->
+                                    <!--                                                <td th:text="${category.getName()}"></td>-->
+                                    <!--                                                <td th:text="${category.isActive()}"></td>-->
+                                    <!--                                                <td style="display: contents;">-->
+                                    <!--                                                    <div class="form-button-action">-->
+                                    <!--                                                        <button type="button" data-toggle="tooltip" title=""-->
+                                    <!--                                                                class="btn btn-link btn-primary btn-lg"-->
+                                    <!--                                                                data-original-title="Edit Task">-->
+                                    <!--                                                            <i class="fa fa-edit"></i>-->
+                                    <!--                                                        </button>-->
+                                    <!--                                                        <button type="button" data-toggle="tooltip" title=""-->
+                                    <!--                                                                class="btn btn-link btn-danger"-->
+                                    <!--                                                                data-original-title="Remove">-->
+                                    <!--                                                            <i class="fa fa-times"></i>-->
+                                    <!--                                                        </button>-->
+                                    <!--                                                    </div>-->
+                                    <!--                                                </td>-->
+                                    <!--                                            </tr>-->
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!--                        PAGINATION-->
+                        <!--                        <div class="row">-->
+                        <!--                            <div class="col-sm-12 col-md-5">-->
+                        <!--                                <div class="dataTables_info" id="add-row_info" role="status"-->
+                        <!--                                     aria-live="polite">-->
+                        <!--                                    Showing 1 to 5 of-->
+                        <!--                                    <data th:text="${totalItems}"></data>-->
+                        <!--                                    entries-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col-sm-12 col-md-7">-->
+                        <!--                                <div class="dataTables_paginate paging_simple_numbers"-->
+                        <!--                                     id="add-row_paginate">-->
+                        <!--                                    <ul class="pagination">-->
+                        <!--                                        <li class="paginate_button page-item" th:if="${currentPage > 2}">-->
+                        <!--                                            <a th:href="@{${keyword != null && !keyword.isEmpty() ? '?keyword=' + keyword + '&pageNum=' + (1): '?pageNum=' + (1)}}"-->
+                        <!--                                               aria-controls="add-row"-->
+                        <!--                                               class="page-link"><i class="fa fa-angle-double-left"></i></a>-->
+                        <!--                                        </li>-->
+                        <!--                                        <li class="paginate_button page-item previous"-->
+                        <!--                                            id="add-row_previous" th:if="${currentPage > 1}">-->
+                        <!--                                            <a th:href="@{${keyword != null && !keyword.isEmpty() ? '?keyword=' + keyword + '&pageNum=' + (currentPage - 1) : '?pageNum=' + (currentPage - 1)}}"-->
+                        <!--                                               aria-controls="add-row"-->
+                        <!--                                               class="page-link"><i class="fa fa-angle-left"></i></a>-->
+                        <!--                                        </li>-->
+                        <!--                                        <li class="paginate_button page-item"-->
+                        <!--                                            th:each="i:${#numbers.sequence(1,totalPages)}"-->
+                        <!--                                            th:classappend="${currentPage==i?'active':' '}">-->
+                        <!--                                            &lt;!&ndash;                                            <a th:href="@{'?pageNum='+${i}}" class="page-link" th:text="${i}"></a>&ndash;&gt;-->
+                        <!--                                            <a th:if="${currentPage != i}"-->
+                        <!--                                               th:href="@{${keyword != null && !keyword.isEmpty() ? '?keyword=' + keyword + '&pageNum=' + i : '?pageNum=' + i}}"-->
+                        <!--                                               class="page-link"-->
+                        <!--                                               th:text="${i}"></a>-->
+                        <!--                                            <span th:if="${currentPage == i}" class="page-link" th:text="${i}"></span>-->
+                        <!--                                        </li>-->
+                        <!--                                        &lt;!&ndash;                                        <li class="paginate_button page-item "><a href="#"&ndash;&gt;-->
+                        <!--                                        &lt;!&ndash;                                                                                  aria-controls="add-row"&ndash;&gt;-->
+                        <!--                                        &lt;!&ndash;                                                                                  data-dt-idx="2"&ndash;&gt;-->
+                        <!--                                        &lt;!&ndash;                                                                                  tabindex="0"&ndash;&gt;-->
+                        <!--                                        &lt;!&ndash;                                                                                  class="page-link">2</a>&ndash;&gt;-->
+                        <!--                                        &lt;!&ndash;                                        </li>&ndash;&gt;-->
+                        <!--                                        <li class="paginate_button page-item next" id="add-row_next"-->
+                        <!--                                            th:if="${currentPage != totalPages}">-->
+                        <!--                                            <a th:href="@{${keyword != null && !keyword.isEmpty() ? '?keyword=' + keyword + '&pageNum=' + (currentPage+1): '?pageNum=' + (currentPage+1)}}"-->
+                        <!--                                               aria-controls="add-row"-->
+                        <!--                                               tabindex="0"-->
+                        <!--                                               class="page-link"><i class="fa fa-angle-right"></i></a>-->
+                        <!--                                        </li>-->
+                        <!--                                        <li class="paginate_button page-item"-->
+                        <!--                                            th:if="${currentPage >= 1 && currentPage < (totalPages - 1)}">-->
+                        <!--                                            <a th:href="@{${keyword != null && !keyword.isEmpty() ? '?keyword=' + keyword + '&pageNum=' + totalPages: '?pageNum=' + totalPages}}"-->
+                        <!--                                               aria-controls="add-row"-->
+                        <!--                                               class="page-link"><i class="fa fa-angle-double-right"></i></a>-->
+                        <!--                                        </li>-->
+                        <!--                                    </ul>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                        <!--                        END PAGINATION-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--    <div th:replace="admin/fragments/pagination :: pagination(${defaultUrl})"></div>-->
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/common_form.js}"></script>
+
+<script>
+    // Delete function for delete button
+
+</script>
+
+<script>
+    // var entityName = "category";
+    // var entityNameId = "categoryId";
+</script>
+
+<!--<div class="wrapper">-->
+<!--    <div class="main-header">-->
+<!--        &lt;!&ndash; Logo Header &ndash;&gt;-->
+<!--        <div th:replace="admin/fragments/header-logo :: header-logo"></div>-->
+<!--        &lt;!&ndash; End Logo Header &ndash;&gt;-->
+
+<!--        &lt;!&ndash; Navbar Header &ndash;&gt;-->
+<!--        <nav th:replace="admin/fragments/navbar-header :: navbar-header"></nav>-->
+
+<!--        &lt;!&ndash; End Navbar &ndash;&gt;-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Sidebar &ndash;&gt;-->
+<!--    <div th:replace="admin/fragments/sidebar :: sidebar"></div>-->
+<!--    &lt;!&ndash; End Sidebar &ndash;&gt;-->
+
+<!--    &lt;!&ndash;    Main Panel&ndash;&gt;-->
+<!--    <div class="main-panel">-->
+<!--        <div class="content">-->
+<!--            <div class="page-inner">-->
+<!--                <div class="mt-2 mb-4">-->
+<!--                    <h2 class="text-white pb-2">Welcome back, Hizrian!</h2>-->
+<!--                    <h5 class="text-white op-7 mb-4">Yesterday I was clever, so I wanted to change the world. Today I am-->
+<!--                        wise, so I am changing myself.</h5>-->
+<!--                </div>-->
+
+<!--            </div>-->
+<!--            <div class="col-md-12">-->
+
+<!--                <div class="card">-->
+<!--                    <div class="card-header">-->
+<!--                        <div class="d-flex align-items-center">-->
+<!--                            <h4 class="card-title">Add Row</h4>-->
+<!--                            <button class="btn btn-primary btn-round ml-auto" data-toggle="modal"-->
+<!--                                    data-target="#addRowModal">-->
+<!--                                <i class="fa fa-plus"></i>-->
+<!--                                Add Row-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="card-body">-->
+<!--                        &lt;!&ndash; Modal &ndash;&gt;-->
+<!--                        &lt;!&ndash;                        <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            <div class="modal-dialog" role="document">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                <div class="modal-content">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                    <div class="modal-header no-bd">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                        <h5 class="modal-title">&ndash;&gt;-->
+<!--                        &lt;!&ndash;														<span class="fw-mediumbold">&ndash;&gt;-->
+<!--                        &lt;!&ndash;														New</span>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                            <span class="fw-light">&ndash;&gt;-->
+<!--                        &lt;!&ndash;															Row&ndash;&gt;-->
+<!--                        &lt;!&ndash;														</span>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                        </h5>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                            <span aria-hidden="true">×</span>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                        </button>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                    <div class="modal-body">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                        <p class="small">Create a new category using this form, make sure you fill them&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                            all</p>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                        <form id="addCategoryForm" th:object="${category}" method="post"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                              th:action="@{/admin/category/addCategory}">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                            <div class="row">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                <div class="col-sm-12">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                    <div class="form-group form-group-default">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        <label for="categoryName">Name</label>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        <input id="categoryName" type="text" class="form-control"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                               placeholder="fill category name" name="categoryName"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                               th:field="*{name}">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                <div class="col-sm-12">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                    <div class="form-group form-group-default">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        <label for="categorySlug">Slug</label>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        <input id="categorySlug" type="text" class="form-control"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                               placeholder="fill category slug" name="categorySlug"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                               th:field="*{slug}">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                <div class="col-md-6">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                    <div class="form-check form-group form-group-default">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        <label>Status</label>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        <div class="form-check-inline">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                            <label class="form-radio-label">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                <input class="form-radio-input" type="radio"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                       name="categoryStatus" value="1" checked=""&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                       th:field="*{active}">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                <span class="form-radio-sign">Enable</span>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                            </label>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                            <label class="form-radio-label ml-3">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                <input class="form-radio-input" type="radio"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                       name="categoryStatus" value="0"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                       th:field="*{active}">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                <span class="form-radio-sign">Disable</span>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                            </label>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        </div>&ndash;&gt;-->
+
+<!--                        &lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                </div>&ndash;&gt;-->
+
+<!--                        &lt;!&ndash;                                                <div class="col-md-12">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                    <div class="form-group form-group-default">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        <label for="formGroupDefaultSelect">Select</label>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        <select class="form-control" id="formGroupDefaultSelect"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                th:field="*{parent}">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                            <option value="">Parent Category</option>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                            <option th:each="parentCategory : ${categories}"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                    th:value="${parentCategory.id}"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                    th:text="${parentCategory.id} + ' - ' + ${parentCategory.name}"></option>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        </select>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                </div>&ndash;&gt;-->
+
+<!--                        &lt;!&ndash;                                                <div class="col-md-12">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                    <div class="form-group form-group-default">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        <div style="margin-bottom: 6px">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                            <label for="exampleFormControlFile1">Category Image</label>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                            <input type="file" class="form-control-file"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                                   id="exampleFormControlFile1">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                        </div>&ndash;&gt;-->
+
+<!--                        &lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                </div>&ndash;&gt;-->
+
+<!--                        &lt;!&ndash;                                            </div>&ndash;&gt;-->
+
+<!--                        &lt;!&ndash;                                        </form>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                    <div class="modal-footer no-bd">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                        <button type="submit" form="addCategoryForm" id="addRowButton"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                                class="btn btn-primary">Add&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                        </button>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                        </button>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        <div th:replace="/admin/category/addCategoryForm :: addCategoryForm"></div>-->
+
+<!--                        <div th:replace="/admin/category/editCategoryForm :: editCategoryForm"></div>-->
+
+
+<!--                        <div class="table-responsive">-->
+<!--                            <div id="add-row_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">-->
+<!--                                <div class="row">-->
+<!--                                    <div class="col-sm-12 col-md-6">-->
+<!--                                        <div class="dataTables_length" id="add-row_length"><label>Show <select-->
+<!--                                                name="add-row_length" aria-controls="add-row"-->
+<!--                                                class="form-control form-control-sm">-->
+<!--                                            <option value="10">10</option>-->
+<!--                                            <option value="25">25</option>-->
+<!--                                            <option value="50">50</option>-->
+<!--                                            <option value="100">100</option>-->
+<!--                                        </select> entries</label></div>-->
+<!--                                    </div>-->
+<!--                                    <div class="col-sm-12 col-md-6">-->
+<!--                                        <div id="add-row_filter" class="dataTables_filter"><label>Search:<input-->
+<!--                                                type="search" class="form-control form-control-sm" placeholder=""-->
+<!--                                                aria-controls="add-row"></label></div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="row">-->
+<!--                                    <div class="col-sm-12">-->
+<!--                                        <table id="add-row"-->
+<!--                                               class="display table table-striped table-hover dataTable"-->
+<!--                                               role="grid" aria-describedby="add-row_info">-->
+<!--                                            <thead>-->
+<!--                                            <tr role="row">-->
+<!--                                                <th class="sorting_asc" tabindex="0" aria-controls="add-row"-->
+<!--                                                    rowspan="1"-->
+<!--                                                    colspan="1" aria-sort="ascending"-->
+<!--                                                    aria-label="Name: activate to sort column descending"-->
+<!--                                                    style="width: auto;">ID-->
+<!--                                                </th>-->
+<!--                                                <th class="sorting_asc" tabindex="0" aria-controls="add-row"-->
+<!--                                                    rowspan="1"-->
+<!--                                                    colspan="1" aria-sort="ascending"-->
+<!--                                                    aria-label="Name: activate to sort column descending"-->
+<!--                                                    style="width: auto;">Name-->
+<!--                                                </th>-->
+<!--                                                <th class="sorting_asc" tabindex="0" aria-controls="add-row"-->
+<!--                                                    rowspan="1"-->
+<!--                                                    colspan="1" aria-sort="ascending"-->
+<!--                                                    aria-label="Name: activate to sort column descending"-->
+<!--                                                    style="width: auto;">Slug-->
+<!--                                                </th>-->
+<!--                                                <th class="sorting" tabindex="0" aria-controls="add-row" rowspan="1"-->
+<!--                                                    colspan="1"-->
+<!--                                                    aria-label="Office: activate to sort column ascending"-->
+<!--                                                    style="width: auto;">Status-->
+<!--                                                </th>-->
+<!--                                                <th style="width: auto; text-align: match-parent" class="sorting"-->
+<!--                                                    tabindex="0"-->
+<!--                                                    aria-controls="add-row" rowspan="1" colspan="2"-->
+<!--                                                    aria-label="Action: activate to sort column ascending">Action-->
+<!--                                                </th>-->
+<!--                                            </tr>-->
+<!--                                            </thead>-->
+<!--                                            <tfoot>-->
+<!--                                            <tr>-->
+<!--                                                <th rowspan="1" colspan="1">ID</th>-->
+<!--                                                <th rowspan="1" colspan="1">Name</th>-->
+<!--                                                <th rowspan="1" colspan="1">Slug</th>-->
+<!--                                                <th rowspan="1" colspan="1">Status</th>-->
+<!--                                                <th rowspan="1" colspan="2" style="text-align: match-parent">Action</th>-->
+<!--                                            </tr>-->
+<!--                                            </tfoot>-->
+<!--                                            <tbody>-->
+<!--                                            <tr role="row" class="odd" th:each="category : ${categories}">-->
+<!--                                                <td class="sorting_1" th:text="${category.id}"></td>-->
+<!--                                                <td class="sorting_1" th:text="${category.name}"></td>-->
+<!--                                                <td th:text="${category.slug}"></td>-->
+<!--                                                <td th:text="${category.active} ? 'Enabled' : 'Disabled'"></td>-->
+<!--                                                <td style="display: contents;">-->
+<!--                                                    <div class="form-button-action">-->
+<!--                                                        <button type="button" data-toggle="modal" title="Edit"-->
+<!--                                                                data-target="#editRowModal"-->
+<!--                                                                class="btn btn-link btn-primary btn-lg"-->
+<!--                                                                data-original-title="Edit Task">-->
+<!--                                                            <a th:href="@{/admin/category/editCategory/{id}(id=${category.id})}"-->
+<!--                                                               class="btn btn-primary"><i class="fa fa-edit"></i></a>-->
+<!--                                                        </button>-->
+<!--                                                        <button type="button" data-toggle="tooltip" title="Delete"-->
+<!--                                                                class="btn btn-link btn-danger"-->
+<!--                                                                data-original-title="Remove">-->
+<!--                                                            <a th:href="@{/admin/category/deleteCategory/{id}(id=${category.id})}"-->
+<!--                                                               class="btn btn-danger"><i class="fa fa-times"></i></a>-->
+<!--                                                        </button>-->
+<!--                                                        &lt;!&ndash;                                                        <button type="button" data-toggle="tooltip"&ndash;&gt;-->
+<!--                                                        &lt;!&ndash;                                                                data-original-title="Remove" class="btn btn-danger deleteCategoryBtn"&ndash;&gt;-->
+<!--                                                        &lt;!&ndash;                                                                id="" th:data="${category.getId()}">&ndash;&gt;-->
+<!--                                                        &lt;!&ndash;                                                            Delete&ndash;&gt;-->
+<!--                                                        &lt;!&ndash;                                                        </button>&ndash;&gt;-->
+<!--                                                        &lt;!&ndash;                                                        <a onclick="return confirm('Are you sure you want to delete this category?')"&ndash;&gt;-->
+<!--                                                        &lt;!&ndash;                                                           th:href="@{/admin/category/deleteCategory/{id}(id=${category.id})}"&ndash;&gt;-->
+<!--                                                        &lt;!&ndash;                                                           class="btn btn-danger" type="">Delete</a>&ndash;&gt;-->
+<!--                                                    </div>-->
+<!--                                                </td>-->
+<!--                                            </tr>-->
+<!--                                            &lt;!&ndash;                                            <tr th:each="category : ${categories}">&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                <td th:text="${category.getName()}"></td>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                <td th:text="${category.isActive()}"></td>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                <td style="display: contents;">&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                    <div class="form-button-action">&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                        <button type="button" data-toggle="tooltip" title=""&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                                class="btn btn-link btn-primary btn-lg"&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                                data-original-title="Edit Task">&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                            <i class="fa fa-edit"></i>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                        </button>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                        <button type="button" data-toggle="tooltip" title=""&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                                class="btn btn-link btn-danger"&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                                data-original-title="Remove">&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                            <i class="fa fa-times"></i>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                        </button>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                </td>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                            </tr>&ndash;&gt;-->
+
+<!--                                            </tbody>-->
+<!--                                        </table>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="row">-->
+<!--                                    <div class="col-sm-12 col-md-5">-->
+<!--                                        <div class="dataTables_info" id="add-row_info" role="status"-->
+<!--                                             aria-live="polite">-->
+<!--                                            Showing 1 to 5 of 10 entries-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="col-sm-12 col-md-7">-->
+<!--                                        <div class="dataTables_paginate paging_simple_numbers"-->
+<!--                                             id="add-row_paginate">-->
+<!--                                            <ul class="pagination">-->
+<!--                                                <li class="paginate_button page-item previous disabled"-->
+<!--                                                    id="add-row_previous"><a href="#" aria-controls="add-row"-->
+<!--                                                                             data-dt-idx="0" tabindex="0"-->
+<!--                                                                             class="page-link">Previous</a>-->
+<!--                                                </li>-->
+<!--                                                <li class="paginate_button page-item active"><a href="#"-->
+<!--                                                                                                aria-controls="add-row"-->
+<!--                                                                                                data-dt-idx="1"-->
+<!--                                                                                                tabindex="0"-->
+<!--                                                                                                class="page-link">1</a>-->
+<!--                                                </li>-->
+<!--                                                <li class="paginate_button page-item "><a href="#"-->
+<!--                                                                                          aria-controls="add-row"-->
+<!--                                                                                          data-dt-idx="2"-->
+<!--                                                                                          tabindex="0"-->
+<!--                                                                                          class="page-link">2</a>-->
+<!--                                                </li>-->
+<!--                                                <li class="paginate_button page-item next" id="add-row_next"><a-->
+<!--                                                        href="#"-->
+<!--                                                        aria-controls="add-row"-->
+<!--                                                        data-dt-idx="3"-->
+<!--                                                        tabindex="0"-->
+<!--                                                        class="page-link">Next</a>-->
+<!--                                                </li>-->
+<!--                                            </ul>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            &lt;!&ndash;            <div>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <button type="button" class="btn btn-danger" id="deleteCategoryBtn">Delete</button>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--        </div>-->
+
+
+<!--        &lt;!&ndash;        <div class="card-body">&ndash;&gt;-->
+<!--        &lt;!&ndash;            <div class="table-responsive">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <table id="basic-datatables" class="display table table-striped table-hover">&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <thead>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <tr>&ndash;&gt;-->
+<!--        &lt;!&ndash;                        <th>Name</th>&ndash;&gt;-->
+<!--        &lt;!&ndash;                        <th>Status</th>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    </tr>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    </thead>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <tfoot>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <tr>&ndash;&gt;-->
+<!--        &lt;!&ndash;                        <th>Name</th>&ndash;&gt;-->
+<!--        &lt;!&ndash;                        <th>Status</th>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    </tr>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    </tfoot>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <tbody>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <tr th:each="category : ${categories}">&ndash;&gt;-->
+<!--        &lt;!&ndash;                        <td th:text="${category.name}" th:value="${category.name}"></td>&ndash;&gt;-->
+<!--        &lt;!&ndash;                        <td th:text="${category.active}" th:value="${category.active}"></td>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    </tr>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;                    </tbody>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </table>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </div>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;        </div>&ndash;&gt;-->
+
+
+<!--        <footer th:replace="admin/fragments/footer :: footer"></footer>-->
+<!--    </div>-->
+<!--    &lt;!&ndash;End Main Panel&ndash;&gt;-->
+
+<!--    &lt;!&ndash; Custom template | don't include it in your project! &ndash;&gt;-->
+<!--    <div th:replace="admin/fragments/custom-template :: custom-template"></div>-->
+<!--    &lt;!&ndash; End Custom template &ndash;&gt;-->
+<!--</div>-->
+
+
+<!--&lt;!&ndash;js&ndash;&gt;-->
+<!--<div th:replace="admin/fragments/script :: script">-->
+<!--</div>-->
+<!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--<script>-->
+
+
+<!--    //== Class definition-->
+<!--    var SweetAlert2Demo = function () {-->
+
+<!--        //== Demos-->
+<!--        var initDemos = function () {-->
+
+
+<!--            //== Sweetalert Demo 1-->
+
+<!--            $('#deleteCategoryBtn').click(function (e) {-->
+<!--                swal({-->
+<!--                    title: 'Are you sure?',-->
+<!--                    text: "You won't be able to revert this!",-->
+<!--                    type: 'warning',-->
+<!--                    buttons: {-->
+<!--                        cancel: {-->
+<!--                            visible: true,-->
+<!--                            text: 'No, cancel!',-->
+<!--                            className: 'btn btn-danger'-->
+<!--                        },-->
+<!--                        confirm: {-->
+<!--                            text: 'Yes, delete it!',-->
+<!--                            className: 'btn btn-success'-->
+<!--                        }-->
+<!--                    }-->
+<!--                }).then((willDelete) => {-->
+<!--                    if (willDelete) {-->
+<!--                        swal("Poof! Your imaginary file has been deleted!", {-->
+<!--                            icon: "success",-->
+<!--                            buttons: {-->
+<!--                                confirm: {-->
+<!--                                    className: 'btn btn-success'-->
+<!--                                }-->
+<!--                            }-->
+<!--                        });-->
+<!--                    } else {-->
+<!--                        swal("Your imaginary file is safe!", {-->
+<!--                            buttons: {-->
+<!--                                confirm: {-->
+<!--                                    className: 'btn btn-success'-->
+<!--                                }-->
+<!--                            }-->
+<!--                        });-->
+<!--                    }-->
+<!--                });-->
+<!--            })-->
+
+
+<!--        };-->
+
+<!--        return {-->
+<!--            //== Init-->
+<!--            init: function () {-->
+<!--                initDemos();-->
+<!--            },-->
+<!--        };-->
+<!--    }();-->
+
+<!--    //== Class Initialization-->
+<!--    jQuery(document).ready(function () {-->
+<!--        SweetAlert2Demo.init();-->
+<!--    });-->
+<!--</script>-->
+
+<!--</div>-->
+
+<script>
+    function sortTable(field) {
+        const urlParams = new URLSearchParams(window.location.search);
+        let sortDir = urlParams.get("sortDir") === "asc" ? "desc" : "asc"; // Toggle giữa asc và desc
+
+        urlParams.set("sortField", field); // Thiết lập trường cần sắp xếp
+        urlParams.set("sortDir", sortDir); // Thiết lập thứ tự sắp xếp
+
+        // Chuyển hướng tới URL mới với các tham số sắp xếp
+        window.location.href = `${window.location.pathname}?${urlParams.toString()}`;
+    }
+</script>
+
+</body>
+</html>
